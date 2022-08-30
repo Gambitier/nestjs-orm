@@ -1,4 +1,4 @@
-import { UserDto } from 'src/user/dto';
+import { UserDto } from 'src/modules/user/dto';
 import {
   ForgetPasswordDto,
   GenerateOtpDto,
