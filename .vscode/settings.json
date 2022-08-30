@@ -5,8 +5,8 @@
     "source.organizeImports": true
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  // https://stackoverflow.com/a/53137571/7039250
-  "typescript.preferences.importModuleSpecifier": "relative"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    // https://stackoverflow.com/a/53137571/7039250
+    "typescript.preferences.importModuleSpecifier": "relative"
+  }
 }
