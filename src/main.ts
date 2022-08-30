@@ -3,6 +3,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { json, urlencoded } from 'express';
 import { AppModule } from './app.module';
+import { PrismaService } from './prisma.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -25,8 +26,8 @@ async function bootstrap() {
   // Prisma listens for shutdown signals and will call process.exit()
   // before your application shutdown hooks fire.To deal with this,
   // you would need to add a listener for Prisma beforeExit event.
-  // const prismaService: PrismaService = app.get(PrismaService);
-  // await prismaService.enableShutdownHooks(app);
+  const prismaService: PrismaService = app.get(PrismaService);
+  await prismaService.enableShutdownHooks(app);
 
   app.setGlobalPrefix('api/v1');
   app.enableCors({
