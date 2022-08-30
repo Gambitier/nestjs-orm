@@ -7,4 +7,12 @@ import { AppService } from './app.service';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  onModuleInit(): void {
+    console.log('Initializing server modules 📡 ');
+  }
+
+  onApplicationBootstrap(): void {
+    console.log('Initialized server, waiting for requests 🚀');
+  }
+}
