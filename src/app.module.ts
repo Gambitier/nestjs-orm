@@ -1,7 +1,8 @@
 import { AuthModule } from '@modules/auth/auth.module';
 import { UserModule } from '@modules/user/user.module';
 import { Module } from '@nestjs/common';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { HttpExceptionFilter } from 'src/filters/HttpException.filter';
 import { APIResponseInterceptor } from 'src/interceptors/api.response.interceptor';
 import { PrismaService } from 'src/prisma.service';
 
@@ -23,8 +24,12 @@ import { PrismaService } from 'src/prisma.service';
       useClass: APIResponseInterceptor,
     },
     // {
-    //   provide: APP_INTERCEPTOR,
-    //   useClass: ExceptionInterceptor,
+    //   provide: APP_FILTER,
+    //   useClass: HttpExceptionFilter,
+    // },
+    // {
+    //   provide: APP_FILTER,
+    //   useClass: AllExceptionsFilter,
     // },
   ],
 })
