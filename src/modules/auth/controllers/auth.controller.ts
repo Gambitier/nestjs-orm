@@ -91,9 +91,9 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('/change-password/:id')
+  @Post('/change-password/:userId')
   async changePassword(
-    @Param('id', new ParseUUIDPipe()) userId: string,
+    @Param('userId', new ParseUUIDPipe()) userId: string,
     @Body() changePasswordDto: ChangePasswordDto,
   ): Promise<ApiResponse> {
     const dto: ResetPassTokenDto = {
@@ -135,9 +135,9 @@ export class AuthController {
   @AllowAnonymous()
   @UseGuards(JwtQueryParamGuard) // but authorize with token from query param
   @HttpCode(HttpStatus.OK)
-  @Post('/reset/:id')
+  @Post('/reset/:userId')
   async resetPassToken(
-    @Param('id', new ParseUUIDPipe()) userId: string,
+    @Param('userId', new ParseUUIDPipe()) userId: string,
     @Query('token') token: string,
     @Body() resetPasswordDto: ResetPassTokenDto,
   ): Promise<ApiResponse> {
