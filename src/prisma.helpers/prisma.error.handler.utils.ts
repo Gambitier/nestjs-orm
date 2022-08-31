@@ -23,8 +23,5 @@ function HandlePrismaClientKnownRequestError(
       const msg = `${error.meta.target[0]} already in use`;
       throw new BadRequestException(msg);
     }
-
-    default:
-      throw error;
   }
 }
