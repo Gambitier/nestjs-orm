@@ -41,18 +41,7 @@ export class UserRepository implements IUserRepository {
 
     const entity = await this._userEntity.create({
       data: data,
-      select: {
-        id: true,
-        prefix: true,
-        firstName: true,
-        middleName: true,
-        lastName: true,
-        email: true,
-        phone: true,
-        password: true,
-        gender: true,
-        dateOfBirth: true,
-        createdAt: true,
+      include: {
         userRoles: true,
       },
     });
