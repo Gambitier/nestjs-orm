@@ -6,7 +6,6 @@
   },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    // https://stackoverflow.com/a/53137571/7039250
-    "typescript.preferences.importModuleSpecifier": "relative"
+    "typescript.preferences.importModuleSpecifier": "non-relative"
   }
 }
