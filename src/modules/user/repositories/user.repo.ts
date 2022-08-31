@@ -6,7 +6,8 @@ import {
 import { GenderEnum } from '@modules/user/enums/gender.enum';
 import { IUserRepository } from '@modules/user/repositories/user.repo.interface';
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, User, UserRole } from '@prisma/client';
+import { HandlePrismaErrors } from 'src/prisma.helpers/prisma.error.handler.utils';
 import { PrismaService } from 'src/prisma.service';
 
 /////////////////////////////////////////////////////
@@ -39,12 +40,20 @@ export class UserRepository implements IUserRepository {
       },
     };
 
-    const entity = await this._userEntity.create({
-      data: data,
-      include: {
-        userRoles: true,
-      },
-    });
+    let entity: User & {
+      userRoles: UserRole[];
+    };
+
+    try {
+      entity = await this._userEntity.create({
+        data: data,
+        include: {
+          userRoles: true,
+        },
+      });
+    } catch (err) {
+      HandlePrismaErrors(err);
+    }
 
     const domainModel: UserDomainModel = {
       ...entity,
