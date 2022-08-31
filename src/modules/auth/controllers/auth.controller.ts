@@ -51,7 +51,6 @@ export class AuthController {
 
     const apiResponse: ApiResponse = {
       message: 'User logged in successfully!',
-      statusCode: HttpStatus.OK,
       data: {
         entity: {
           user: data.user,
@@ -71,7 +70,6 @@ export class AuthController {
     const tokens: Token = await this.authService.login(req.user);
     const apiResponse: ApiResponse = {
       message: 'User logged in successfully!',
-      statusCode: HttpStatus.OK,
       data: {
         entity: {
           user: req.user,
@@ -90,7 +88,6 @@ export class AuthController {
     const tokens: Token = await this.authService.login(req.user);
     const apiResponse: ApiResponse = {
       message: 'User logged in successfully!',
-      statusCode: HttpStatus.OK,
       data: {
         entity: {
           user: req.user,
@@ -108,7 +105,6 @@ export class AuthController {
     const generateOtpResponseDto = await this.authService.generateOtp(user);
     const apiResponse: ApiResponse = {
       message: 'OTP has been sent!',
-      statusCode: HttpStatus.OK,
       data: generateOtpResponseDto,
     };
     return apiResponse;
@@ -132,7 +128,6 @@ export class AuthController {
 
     const apiResponse: ApiResponse = {
       message: 'Password changed successfully!',
-      statusCode: HttpStatus.OK,
       data: status,
     };
 
@@ -150,7 +145,6 @@ export class AuthController {
     );
     const apiResponse: ApiResponse = {
       message: 'Reset link mail sent!',
-      statusCode: HttpStatus.OK,
       data: status,
     };
     return apiResponse;
@@ -173,7 +167,6 @@ export class AuthController {
     );
     const apiResponse: ApiResponse = {
       message: 'Password updated successfully!',
-      statusCode: HttpStatus.OK,
       data: status,
     };
     return apiResponse;

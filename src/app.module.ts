@@ -1,12 +1,32 @@
 import { AuthModule } from '@modules/auth/auth.module';
 import { UserModule } from '@modules/user/user.module';
 import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APIResponseInterceptor } from 'src/interceptors/api.response.interceptor';
 import { PrismaService } from 'src/prisma.service';
 
 @Module({
   imports: [UserModule, AuthModule],
   controllers: [],
-  providers: [PrismaService],
+  providers: [
+    PrismaService,
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtGuard,
+    // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
+    // },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: APIResponseInterceptor,
+    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: ExceptionInterceptor,
+    // },
+  ],
 })
 export class AppModule {
   onModuleInit(): void {
