@@ -1,4 +1,4 @@
-import { UserRoleDto } from 'src/modules/user/dto';
+import { UserRoleDto } from '@modules/user/dto';
 
 export type JwtUserData = {
   userId: string;

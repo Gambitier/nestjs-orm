@@ -1,7 +1,7 @@
+import { UserRoleDto } from '@modules/user/dto/user.role.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { IsEmail } from 'class-validator';
-import { UserRoleDto } from './user.role.dto';
 
 export class UserDto {
   constructor(props: UserDto) {

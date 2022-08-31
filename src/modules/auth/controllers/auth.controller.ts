@@ -1,3 +1,18 @@
+import { ApiResponse } from '@common/types';
+import {
+  AllowAnonymous,
+  JwtQueryParamGuard,
+  LocalAuthGuard,
+  OTPAuthGuard,
+} from '@modules/auth/common';
+import {
+  ChangePasswordDto,
+  ForgetPasswordDto,
+  GenerateOtpDto,
+  ResetPassTokenDto,
+} from '@modules/auth/dto';
+import { IAuthService } from '@modules/auth/services';
+import { Tokens } from '@modules/auth/types/token.type';
 import {
   Body,
   Controller,
@@ -12,21 +27,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ApiResponse } from 'src/common/types';
-import {
-  AllowAnonymous,
-  JwtQueryParamGuard,
-  LocalAuthGuard,
-  OTPAuthGuard,
-} from '../common';
-import {
-  ChangePasswordDto,
-  ForgetPasswordDto,
-  GenerateOtpDto,
-  ResetPassTokenDto,
-} from '../dto';
-import { IAuthService } from '../services';
-import { Tokens } from '../types/token.type';
 
 /////////////////////////////////////////////////////////////////////////
 

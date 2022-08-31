@@ -1,7 +1,7 @@
+import { passwordRegex } from '@common/constants';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { IsString, Matches } from 'class-validator';
-import { passwordRegex } from '../../../../common/constants';
 
 export class ChangePasswordDto {
   @ApiProperty()

@@ -1,6 +1,6 @@
+import { AuthController } from '@modules/auth/controllers/auth.controller';
+import { AuthServiceProvider } from '@modules/auth/providers';
 import { Module } from '@nestjs/common';
-import { AuthController } from './controllers/auth.controller';
-import { AuthServiceProvider } from './providers';
 
 @Module({
   imports: [],

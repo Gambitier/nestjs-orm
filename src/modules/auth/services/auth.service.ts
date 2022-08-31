@@ -1,5 +1,3 @@
-import { Injectable } from '@nestjs/common';
-import { UserDto } from '../../user/dto';
 import {
   ForgetPasswordDto,
   GenerateOtpDto,
@@ -7,9 +5,11 @@ import {
   OtpLoginDto,
   OtpResponseDto,
   ResetPassTokenDto,
-} from '../dto';
-import { Tokens } from '../types/token.type';
-import { IAuthService } from './auth.service.interface';
+} from '@modules/auth/dto';
+import { IAuthService } from '@modules/auth/services/auth.service.interface';
+import { Tokens } from '@modules/auth/types/token.type';
+import { UserDto } from '@modules/user/dto';
+import { Injectable } from '@nestjs/common';
 
 /////////////////////////////////////////////////////
 @Injectable()

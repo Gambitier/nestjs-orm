@@ -1,11 +1,12 @@
+import { LoginDto } from '@modules/auth/dto';
+import { IAuthService } from '@modules/auth/services';
+import { UserDto } from '@modules/user/dto';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { plainToClass } from 'class-transformer';
-import { Strategy } from 'passport-local';
-import { UserDto } from 'src/modules/user/dto';
-import { LoginDto } from '../dto';
-import { IAuthService } from '../services';
+import { Strategy } from 'passport-jwt';
 
+///////////////////////////////////////////////////////////
 @Injectable()
 export class LocalStrategy extends PassportStrategy(
   Strategy,

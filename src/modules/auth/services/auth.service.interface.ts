@@ -1,4 +1,3 @@
-import { UserDto } from 'src/modules/user/dto';
 import {
   ForgetPasswordDto,
   GenerateOtpDto,
@@ -6,8 +5,11 @@ import {
   OtpLoginDto,
   OtpResponseDto,
   ResetPassTokenDto,
-} from '../dto';
-import { Tokens } from '../types/token.type';
+} from '@modules/auth/dto';
+import { Tokens } from '@modules/auth/types/token.type';
+import { UserDto } from '@modules/user/dto';
+
+///////////////////////////////////////////////////////////
 
 export const IAuthService = Symbol('IAuthService');
 

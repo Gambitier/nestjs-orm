@@ -1,8 +1,8 @@
+import { ALLOW_ANONYMOUS } from '@modules/auth/common/allow.anonymous.decorator';
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
-import { ALLOW_ANONYMOUS } from './allow.anonymous.decorator';
 
 @Injectable()
 export class JwtGuard extends AuthGuard('jwt') {

@@ -1,5 +1,5 @@
+import { UserRoleEnum } from '@modules/auth/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserRoleEnum } from 'src/modules/auth/common';
 
 export class UserRoleDto {
   constructor(props: UserRoleDto) {

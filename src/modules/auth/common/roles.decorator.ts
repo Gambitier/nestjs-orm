@@ -1,5 +1,5 @@
+import { UserRoleEnum } from '@modules/auth/common';
 import { SetMetadata } from '@nestjs/common';
-import { UserRoleEnum } from './user.role.enum';
 
 export const ROLES_KEY = 'roles';
 export const Roles = (...roles: UserRoleEnum[]) =>
