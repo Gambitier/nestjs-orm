@@ -7,8 +7,14 @@ export class UserRoleDto {
   }
 
   @ApiProperty()
-  roleId: number;
+  id: string;
 
   @ApiProperty()
-  roleName: UserRoleEnum;
+  role: UserRoleEnum;
+
+  @ApiProperty()
+  userId: string;
+
+  @ApiProperty()
+  createdAt: Date;
 }

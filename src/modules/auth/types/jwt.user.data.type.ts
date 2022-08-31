@@ -1,10 +1,10 @@
 import { UserRoleDto } from '@modules/user/dto';
 
 export type JwtUserData = {
-  userId: string;
+  id: string;
   firstName: string;
   lastName: string;
-  mobileNumber: string;
+  phone: string;
   email: string;
   roles: UserRoleDto[];
 };

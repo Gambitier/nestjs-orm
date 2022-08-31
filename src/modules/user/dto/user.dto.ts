@@ -9,9 +9,6 @@ export class UserDto {
   }
 
   @ApiProperty()
-  userName: string;
-
-  @ApiProperty()
   id: string;
 
   @ApiProperty()
@@ -27,7 +24,7 @@ export class UserDto {
   prefix: string;
 
   @ApiProperty()
-  mobileNumber: string;
+  phone: string;
 
   @ApiProperty()
   @IsEmail()
@@ -46,11 +43,5 @@ export class UserDto {
   createdAt: Date;
 
   @ApiProperty()
-  deletedAt: Date | null;
-
-  @ApiProperty()
-  updatedAt: Date | null;
-
-  @ApiProperty()
-  roles: UserRoleDto[];
+  userRoles: UserRoleDto[];
 }

@@ -11,8 +11,10 @@ import {
   GenerateOtpDto,
   ResetPassTokenDto,
 } from '@modules/auth/dto';
+import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
 import { IAuthService } from '@modules/auth/services';
 import { Tokens } from '@modules/auth/types/token.type';
+import { UserDto } from '@modules/user/dto';
 import {
   Body,
   Controller,
@@ -38,6 +40,27 @@ export class AuthController {
     @Inject(IAuthService)
     private readonly authService: IAuthService,
   ) {}
+
+  @AllowAnonymous() // pass jwt authentication
+  @HttpCode(HttpStatus.OK)
+  @Post('/signup')
+  async signup(@Body() signupDto: SignupDto): Promise<ApiResponse> {
+    const data: { user: UserDto; tokens: Tokens } =
+      await this.authService.signup(signupDto);
+
+    const apiResponse: ApiResponse = {
+      message: 'User logged in successfully!',
+      statusCode: HttpStatus.OK,
+      data: {
+        entity: {
+          user: data.user,
+          access_token: data.tokens,
+        },
+      },
+    };
+
+    return apiResponse;
+  }
 
   @AllowAnonymous() // pass jwt authentication
   @UseGuards(LocalAuthGuard) // but authorize with username and pass

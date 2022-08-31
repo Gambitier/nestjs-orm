@@ -6,6 +6,7 @@ import {
   OtpResponseDto,
   ResetPassTokenDto,
 } from '@modules/auth/dto';
+import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
 import { Tokens } from '@modules/auth/types/token.type';
 import { UserDto } from '@modules/user/dto';
 
@@ -14,6 +15,8 @@ import { UserDto } from '@modules/user/dto';
 export const IAuthService = Symbol('IAuthService');
 
 export interface IAuthService {
+  signup(signupDto: SignupDto): Promise<{ user: UserDto; tokens: Tokens }>;
+
   resetPassword(resetPasswordDto: ResetPassTokenDto): Promise<boolean>;
 
   emailResetPasswordLink(
