@@ -300,6 +300,10 @@ export const MigrationError = {
   ShadowDatabasesAutomaticCreationIsDisabled: 'P3020',
 } as const;
 
+//=================================================================================
+// reference: https://github.com/vinpac/prisma-error-enum/blob/main/src/index.ts
+//=================================================================================
+
 export const PrismaError = {
   ...CommonError,
   ...MigrationError,
