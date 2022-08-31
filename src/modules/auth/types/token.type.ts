@@ -1,8 +1,8 @@
 import { Exclude } from 'class-transformer';
 
-export class Tokens {
-  access_token: string;
+export class Token {
+  accessToken: string;
 
   @Exclude()
-  refresh_token: string;
+  refreshToken: string;
 }

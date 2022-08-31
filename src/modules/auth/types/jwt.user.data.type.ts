@@ -6,5 +6,5 @@ export type JwtUserData = {
   lastName: string;
   phone: string;
   email: string;
-  roles: UserRoleDto[];
+  userRoles: UserRoleDto[];
 };

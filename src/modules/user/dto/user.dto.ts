@@ -1,6 +1,5 @@
 import { UserRoleDto } from '@modules/user/dto/user.role.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude } from 'class-transformer';
 import { IsEmail } from 'class-validator';
 
 export class UserDto {
@@ -35,9 +34,6 @@ export class UserDto {
 
   @ApiProperty()
   dateOfBirth: Date;
-
-  @Exclude({ toPlainOnly: true, toClassOnly: false })
-  password: string;
 
   @ApiProperty()
   createdAt: Date;

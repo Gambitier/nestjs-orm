@@ -13,7 +13,7 @@ import {
 } from '@modules/auth/dto';
 import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
 import { IAuthService } from '@modules/auth/services';
-import { Tokens } from '@modules/auth/types/token.type';
+import { Token } from '@modules/auth/types/token.type';
 import { UserDto } from '@modules/user/dto';
 import {
   Body,
@@ -45,8 +45,9 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('/signup')
   async signup(@Body() signupDto: SignupDto): Promise<ApiResponse> {
-    const data: { user: UserDto; tokens: Tokens } =
-      await this.authService.signup(signupDto);
+    const data: { user: UserDto; token: Token } = await this.authService.signup(
+      signupDto,
+    );
 
     const apiResponse: ApiResponse = {
       message: 'User logged in successfully!',
@@ -54,7 +55,7 @@ export class AuthController {
       data: {
         entity: {
           user: data.user,
-          access_token: data.tokens,
+          token: data.token,
         },
       },
     };
@@ -67,14 +68,14 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('/login')
   async logIn(@Request() req): Promise<ApiResponse> {
-    const tokens: Tokens = await this.authService.login(req.user);
+    const tokens: Token = await this.authService.login(req.user);
     const apiResponse: ApiResponse = {
       message: 'User logged in successfully!',
       statusCode: HttpStatus.OK,
       data: {
         entity: {
           user: req.user,
-          access_token: tokens.access_token,
+          tokens: tokens,
         },
       },
     };
@@ -86,14 +87,14 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('/login-otp')
   async loginOtp(@Request() req): Promise<ApiResponse> {
-    const tokens: Tokens = await this.authService.login(req.user);
+    const tokens: Token = await this.authService.login(req.user);
     const apiResponse: ApiResponse = {
       message: 'User logged in successfully!',
       statusCode: HttpStatus.OK,
       data: {
         entity: {
           user: req.user,
-          access_token: tokens.access_token,
+          tokens: tokens,
         },
       },
     };

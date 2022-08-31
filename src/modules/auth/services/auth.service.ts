@@ -11,7 +11,7 @@ import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
 import { IAuthService } from '@modules/auth/services/auth.service.interface';
 import { jwtConstants } from '@modules/auth/strategies/constants';
 import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
-import { Tokens } from '@modules/auth/types/token.type';
+import { Token } from '@modules/auth/types/token.type';
 import { UserDto } from '@modules/user/dto';
 import { IUserService } from '@modules/user/services/user.service.interface';
 import { Inject, Injectable } from '@nestjs/common';
@@ -31,17 +31,17 @@ export class AuthService implements IAuthService {
     //
   }
 
-  async signup(
-    signupDto: SignupDto,
-  ): Promise<{ user: UserDto; tokens: Tokens }> {
+  async signup(signupDto: SignupDto): Promise<{ user: UserDto; token: Token }> {
     const user = await this.userService.createUser({
       ...signupDto,
       userRoles: [UserRoleEnum.USER],
     });
 
+    const token = await this.getToken(user);
+
     return {
       user: user,
-      tokens: null,
+      token: token,
     };
   }
 
@@ -59,7 +59,7 @@ export class AuthService implements IAuthService {
     throw new Error('Method not implemented.');
   }
 
-  login(userDto: UserDto): Promise<Tokens> {
+  login(userDto: UserDto): Promise<Token> {
     throw new Error('Method not implemented.');
   }
 
@@ -97,9 +97,7 @@ export class AuthService implements IAuthService {
     return true;
   }
 
-  private getTokens = async (
-    userDataForToken: JwtUserData,
-  ): Promise<Tokens> => {
+  private getToken = async (userDataForToken: JwtUserData): Promise<Token> => {
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(userDataForToken, {
         secret: jwtConstants.at_secret,
@@ -112,9 +110,9 @@ export class AuthService implements IAuthService {
       }),
     ]);
 
-    const tokens = new Tokens();
-    tokens.access_token = at;
-    tokens.refresh_token = rt;
-    return tokens;
+    const token = new Token();
+    token.accessToken = at;
+    token.refreshToken = rt;
+    return token;
   };
 }

@@ -7,7 +7,7 @@ import {
   ResetPassTokenDto,
 } from '@modules/auth/dto';
 import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
-import { Tokens } from '@modules/auth/types/token.type';
+import { Token } from '@modules/auth/types/token.type';
 import { UserDto } from '@modules/user/dto';
 
 ///////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@ import { UserDto } from '@modules/user/dto';
 export const IAuthService = Symbol('IAuthService');
 
 export interface IAuthService {
-  signup(signupDto: SignupDto): Promise<{ user: UserDto; tokens: Tokens }>;
+  signup(signupDto: SignupDto): Promise<{ user: UserDto; token: Token }>;
 
   resetPassword(resetPasswordDto: ResetPassTokenDto): Promise<boolean>;
 
@@ -25,7 +25,7 @@ export interface IAuthService {
 
   validateUser(loginDto: LoginDto): Promise<UserDto>;
 
-  login(userDto: UserDto): Promise<Tokens>;
+  login(userDto: UserDto): Promise<Token>;
 
   verifyOtp(user: OtpLoginDto): Promise<UserDto>;
 
