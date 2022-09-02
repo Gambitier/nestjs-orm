@@ -17,20 +17,23 @@ export class LocalStrategy extends PassportStrategy(
     private readonly authService: IAuthService,
   ) {
     super({
-      usernameField: 'user_name',
+      usernameField: 'email',
       passwordField: 'password',
     });
   }
 
-  async validate(user_name: string, password: string): Promise<any> {
+  async validate(email: string, password: string): Promise<any> {
     const loginDto = plainToClass(LoginDto, {
-      user_name: user_name,
+      email: email,
       password: password,
     });
+
     const user: UserDto = await this.authService.validateUser(loginDto);
+
     if (!user) {
       throw new UnauthorizedException();
     }
+
     return user;
   }
 }

@@ -7,8 +7,8 @@ export class LoginDto {
   }
 
   @ApiProperty()
-  @IsString({ message: "'User Name' must be string" })
-  userName: string;
+  @IsString({ message: "'email' must be string" })
+  email: string;
 
   @ApiProperty({ example: 'Password@1234' })
   password: string;
