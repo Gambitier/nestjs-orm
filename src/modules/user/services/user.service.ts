@@ -1,3 +1,4 @@
+import { LoginDto } from '@modules/auth/dto';
 import {
   CreateUserDomainModel,
   UserDomainModel,
@@ -18,6 +19,10 @@ export class UserService implements IUserService {
     private userRepository: IUserRepository,
   ) {
     //
+  }
+
+  findFirstOrThrowByLoginDto(loginDto: LoginDto): Promise<UserDomainModel> {
+    return this.userRepository.findFirstOrThrowByLoginDto(loginDto);
   }
 
   createUser(model: CreateUserDomainModel): Promise<UserDomainModel> {

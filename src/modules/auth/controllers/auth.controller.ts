@@ -9,6 +9,7 @@ import {
   ChangePasswordDto,
   ForgetPasswordDto,
   GenerateOtpDto,
+  LoginDto,
   ResetPassTokenDto,
 } from '@modules/auth/dto';
 import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
@@ -67,6 +68,7 @@ export class AuthController {
     return apiResponse;
   }
 
+  @ApiBody({ type: LoginDto })
   @AllowAnonymous() // pass jwt authentication
   @UseGuards(LocalAuthGuard) // but authorize with username and pass
   @HttpCode(HttpStatus.OK)

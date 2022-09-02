@@ -1,4 +1,5 @@
 import { UserRoleEnum } from '@modules/auth/common';
+import { LoginDto } from '@modules/auth/dto';
 import { IDatabaseErrorHandler } from '@modules/database-error-handler/database.error.handler.interface';
 import {
   CreateUserDomainModel,
@@ -30,6 +31,30 @@ export class UserRepository implements IUserRepository {
     this._userEntity = prismaService.user;
   }
 
+  async findFirstOrThrowByLoginDto(
+    loginDto: LoginDto,
+  ): Promise<UserDomainModel> {
+    let entity: User & {
+      userRoles: UserRole[];
+    };
+
+    try {
+      entity = await this._userEntity.findFirstOrThrow({
+        where: {
+          password: loginDto.password,
+          email: loginDto.email,
+        },
+        include: {
+          userRoles: true,
+        },
+      });
+    } catch (err) {
+      this.databaseErrorHandler.HandleError(err);
+    }
+
+    return this.getUserDomainModel(entity);
+  }
+
   async createUser(model: CreateUserDomainModel): Promise<UserDomainModel> {
     const data: Prisma.UserCreateInput = {
       ...model,
@@ -59,6 +84,10 @@ export class UserRepository implements IUserRepository {
       this.databaseErrorHandler.HandleError(err);
     }
 
+    return this.getUserDomainModel(entity);
+  }
+
+  private getUserDomainModel(entity: User & { userRoles: UserRole[] }) {
     const domainModel: UserDomainModel = {
       ...entity,
       gender: entity.gender as GenderEnum,

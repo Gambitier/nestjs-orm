@@ -1,7 +1,6 @@
 import {
   ForgetPasswordDto,
   GenerateOtpDto,
-  LoginDto,
   OtpLoginDto,
   OtpResponseDto,
   ResetPassTokenDto,
@@ -25,8 +24,6 @@ export interface IAuthService {
   emailResetPasswordLink(
     forgetPasswordDto: ForgetPasswordDto,
   ): Promise<boolean>;
-
-  validateUser(loginDto: LoginDto): Promise<UserDto>;
 
   login(userDto: UserDto): Promise<Token>;
 

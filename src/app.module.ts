@@ -1,8 +1,9 @@
 import { AuthModule } from '@modules/auth/auth.module';
+import { JwtGuard } from '@modules/auth/common';
 import { DatabaseErrorHandlerModule } from '@modules/database-error-handler/database.error.handler.module';
 import { UserModule } from '@modules/user/user.module';
 import { Module } from '@nestjs/common';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { APIResponseInterceptor } from 'src/interceptors/api.response.interceptor';
 import { PrismaService } from 'src/prisma.service';
 
@@ -11,10 +12,10 @@ import { PrismaService } from 'src/prisma.service';
   controllers: [],
   providers: [
     PrismaService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: JwtGuard,
+    },
     // {
     //   provide: APP_GUARD,
     //   useClass: RolesGuard,

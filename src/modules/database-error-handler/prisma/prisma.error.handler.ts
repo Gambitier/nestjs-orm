@@ -15,6 +15,8 @@ export class PrismaDatabaseErrorHandler implements IDatabaseErrorHandler {
     if (error instanceof PrismaClientKnownRequestError) {
       const exception = error as PrismaClientKnownRequestError;
       this.HandlePrismaClientKnownRequestError(exception);
+    } else if (error.name === 'NotFoundError') {
+      throw new BadRequestException(error.message);
     }
 
     throw error;

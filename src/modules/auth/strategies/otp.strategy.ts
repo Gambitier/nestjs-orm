@@ -4,7 +4,7 @@ import { UserDto } from '@modules/user/dto';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { plainToClass } from 'class-transformer';
-import { Strategy } from 'passport-jwt';
+import { Strategy } from 'passport-local';
 
 ///////////////////////////////////////////////////////////
 

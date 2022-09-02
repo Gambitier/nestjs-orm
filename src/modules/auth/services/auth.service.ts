@@ -2,7 +2,6 @@ import { UserRoleEnum } from '@modules/auth/common';
 import {
   ForgetPasswordDto,
   GenerateOtpDto,
-  LoginDto,
   OtpLoginDto,
   OtpResponseDto,
   ResetPassTokenDto,
@@ -55,10 +54,6 @@ export class AuthService implements IAuthService {
   emailResetPasswordLink(
     forgetPasswordDto: ForgetPasswordDto,
   ): Promise<boolean> {
-    throw new Error('Method not implemented.');
-  }
-
-  validateUser(loginDto: LoginDto): Promise<UserDto> {
     throw new Error('Method not implemented.');
   }
 
