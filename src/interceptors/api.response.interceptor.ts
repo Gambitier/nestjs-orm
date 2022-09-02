@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ApiResponse } from '@common/types';
+import { APIResponse } from '@common/types';
 import { AuditData } from '@modules/audit-logs/common/audit.data.type';
 import {
   AuditMetadata,
@@ -31,7 +31,7 @@ export class APIResponseInterceptor implements NestInterceptor {
     private reflector: Reflector,
   ) {}
 
-  getAuditData(req: Request, res: ApiResponse, route: string) {
+  getAuditData(req: Request, res: APIResponse, route: string) {
     //
 
     if (req.headers.authorization) {
@@ -63,7 +63,7 @@ export class APIResponseInterceptor implements NestInterceptor {
     return entity;
   }
 
-  responseHandler = (response: ApiResponse) => {
+  responseHandler = (response: APIResponse) => {
     const apiResponse = {
       status: response.status ?? 'Suceess',
       statusCode: response.statusCode, // TODO add http status code here from httpResponse

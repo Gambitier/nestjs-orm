@@ -1,4 +1,4 @@
-import { ApiResponse } from '@common/types';
+import { APIResponse } from '@common/types';
 import {
   AllowAnonymous,
   JwtQueryParamGuard,
@@ -29,7 +29,8 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LoginApiResponse } from './api.response.types/auth.api.response';
 
 /////////////////////////////////////////////////////////////////////////
 
@@ -42,14 +43,16 @@ export class AuthController {
     private readonly authService: IAuthService,
   ) {}
 
+  @ApiBody({ type: SignupDto })
+  @ApiResponse({ type: LoginApiResponse })
   @AllowAnonymous() // pass jwt authentication
   @HttpCode(HttpStatus.OK)
   @Post('/signup')
-  async signup(@Body() signupDto: SignupDto): Promise<ApiResponse> {
+  async signup(@Body() signupDto: SignupDto): Promise<APIResponse> {
     const data: { user: UserDomainModel; token: Token } =
       await this.authService.signup(signupDto);
 
-    const apiResponse: ApiResponse = {
+    const apiResponse: APIResponse = {
       message: 'User logged in successfully!',
       data: {
         entity: {
@@ -66,9 +69,9 @@ export class AuthController {
   @UseGuards(LocalAuthGuard) // but authorize with username and pass
   @HttpCode(HttpStatus.OK)
   @Post('/login')
-  async logIn(@Request() req): Promise<ApiResponse> {
+  async logIn(@Request() req): Promise<APIResponse> {
     const tokens: Token = await this.authService.login(req.user);
-    const apiResponse: ApiResponse = {
+    const apiResponse: APIResponse = {
       message: 'User logged in successfully!',
       data: {
         entity: {
@@ -84,9 +87,9 @@ export class AuthController {
   @UseGuards(OTPAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('/login-otp')
-  async loginOtp(@Request() req): Promise<ApiResponse> {
+  async loginOtp(@Request() req): Promise<APIResponse> {
     const tokens: Token = await this.authService.login(req.user);
-    const apiResponse: ApiResponse = {
+    const apiResponse: APIResponse = {
       message: 'User logged in successfully!',
       data: {
         entity: {
@@ -101,9 +104,9 @@ export class AuthController {
   @AllowAnonymous()
   @HttpCode(HttpStatus.OK)
   @Post('/generate-otp')
-  async generateOtp(@Body() user: GenerateOtpDto): Promise<ApiResponse> {
+  async generateOtp(@Body() user: GenerateOtpDto): Promise<APIResponse> {
     const generateOtpResponseDto = await this.authService.generateOtp(user);
-    const apiResponse: ApiResponse = {
+    const apiResponse: APIResponse = {
       message: 'OTP has been sent!',
       data: generateOtpResponseDto,
     };
@@ -115,7 +118,7 @@ export class AuthController {
   async changePassword(
     @Param('userId', new ParseUUIDPipe()) userId: string,
     @Body() changePasswordDto: ChangePasswordDto,
-  ): Promise<ApiResponse> {
+  ): Promise<APIResponse> {
     const dto: ResetPassTokenDto = {
       newPassword: changePasswordDto.newPassword,
       userId: userId,
@@ -126,7 +129,7 @@ export class AuthController {
       resetPasswordDto,
     );
 
-    const apiResponse: ApiResponse = {
+    const apiResponse: APIResponse = {
       message: 'Password changed successfully!',
       data: status,
     };
@@ -139,11 +142,11 @@ export class AuthController {
   @Post('/forget-password')
   async forgetPassword(
     @Body() forgetPasswordDto: ForgetPasswordDto,
-  ): Promise<ApiResponse> {
+  ): Promise<APIResponse> {
     const status: boolean = await this.authService.emailResetPasswordLink(
       forgetPasswordDto,
     );
-    const apiResponse: ApiResponse = {
+    const apiResponse: APIResponse = {
       message: 'Reset link mail sent!',
       data: status,
     };
@@ -158,14 +161,14 @@ export class AuthController {
     @Param('userId', new ParseUUIDPipe()) userId: string,
     @Query('token') token: string,
     @Body() resetPasswordDto: ResetPassTokenDto,
-  ): Promise<ApiResponse> {
+  ): Promise<APIResponse> {
     // use this url http://localhost:7575/api/v1/user/reset/{{nestjs_userid}}?token={{nestjs_token}}
 
     resetPasswordDto.userId = userId;
     const status: boolean = await this.authService.resetPassword(
       resetPasswordDto,
     );
-    const apiResponse: ApiResponse = {
+    const apiResponse: APIResponse = {
       message: 'Password updated successfully!',
       data: status,
     };

@@ -38,7 +38,7 @@ export class SignupDto {
   @Length(10, 10)
   phone: string;
 
-  @ApiProperty({ example: GenderEnum.UNSPECIFIED })
+  @ApiProperty({ enum: GenderEnum })
   @IsEnum(GenderEnum)
   gender: GenderEnum = GenderEnum.UNSPECIFIED;
 

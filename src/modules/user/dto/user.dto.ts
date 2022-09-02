@@ -36,7 +36,7 @@ export class UserDto {
   @Expose()
   phone: string;
 
-  @ApiProperty()
+  @ApiProperty({ enum: GenderEnum })
   @Expose()
   gender: GenderEnum;
 
@@ -48,7 +48,7 @@ export class UserDto {
   @Expose()
   createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ type: [UserRoleDto] })
   @Expose()
   @Type(() => UserRoleDto)
   userRoles: UserRoleDto[];
