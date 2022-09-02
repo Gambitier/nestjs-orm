@@ -10,9 +10,9 @@ import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
 import { IAuthService } from '@modules/auth/services/auth.service.interface';
 import { jwtConstants } from '@modules/auth/strategies/constants';
 import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
-import { Token } from '@modules/auth/types/token.type';
+import { TokenDto } from '@modules/auth/types/token.type';
 import { UserDomainModel } from '@modules/user/domain.types/user';
-import { UserDto } from '@modules/user/dto';
+import { UserDto, UserRoleDto } from '@modules/user/dto';
 import { IUserService } from '@modules/user/services/user.service.interface';
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -33,7 +33,7 @@ export class AuthService implements IAuthService {
 
   async signup(
     signupDto: SignupDto,
-  ): Promise<{ user: UserDomainModel; token: Token }> {
+  ): Promise<{ user: UserDomainModel; token: TokenDto }> {
     const user = await this.userService.createUser({
       ...signupDto,
       userRoles: [UserRoleEnum.USER],
@@ -57,8 +57,9 @@ export class AuthService implements IAuthService {
     throw new Error('Method not implemented.');
   }
 
-  login(userDto: UserDto): Promise<Token> {
-    throw new Error('Method not implemented.');
+  async login(user: UserDomainModel): Promise<TokenDto> {
+    const token = await this.getToken(user);
+    return token;
   }
 
   verifyOtp(user: OtpLoginDto): Promise<UserDto> {
@@ -95,7 +96,25 @@ export class AuthService implements IAuthService {
     return true;
   }
 
-  private getToken = async (userDataForToken: JwtUserData): Promise<Token> => {
+  private getToken = async (user: UserDomainModel): Promise<TokenDto> => {
+    const userDataForToken: JwtUserData = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      email: user.email,
+      userRoles: user.userRoles.map((role) => {
+        const dto: UserRoleDto = {
+          id: role.id,
+          role: role.role,
+          userId: role.userId,
+          createdAt: role.createdAt,
+        };
+
+        return dto;
+      }),
+    };
+
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(userDataForToken, {
         secret: jwtConstants.at_secret,
@@ -108,9 +127,11 @@ export class AuthService implements IAuthService {
       }),
     ]);
 
-    const token = new Token();
-    token.accessToken = at;
-    token.refreshToken = rt;
+    const token: TokenDto = {
+      accessToken: at,
+      refreshToken: rt,
+    };
+
     return token;
   };
 }

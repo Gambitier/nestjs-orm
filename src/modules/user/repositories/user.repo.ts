@@ -1,5 +1,4 @@
 import { UserRoleEnum } from '@modules/auth/common';
-import { LoginDto } from '@modules/auth/dto';
 import { IDatabaseErrorHandler } from '@modules/database-error-handler/database.error.handler.interface';
 import {
   CreateUserDomainModel,
@@ -31,9 +30,7 @@ export class UserRepository implements IUserRepository {
     this._userEntity = prismaService.user;
   }
 
-  async findFirstOrThrowByLoginDto(
-    loginDto: LoginDto,
-  ): Promise<UserDomainModel> {
+  async findFirstByEmailOrThrow(email: string): Promise<UserDomainModel> {
     let entity: User & {
       userRoles: UserRole[];
     };
@@ -41,8 +38,7 @@ export class UserRepository implements IUserRepository {
     try {
       entity = await this._userEntity.findFirstOrThrow({
         where: {
-          password: loginDto.password,
-          email: loginDto.email,
+          email: email,
         },
         include: {
           userRoles: true,

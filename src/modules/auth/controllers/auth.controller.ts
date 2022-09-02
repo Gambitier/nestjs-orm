@@ -14,9 +14,8 @@ import {
 } from '@modules/auth/dto';
 import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
 import { IAuthService } from '@modules/auth/services';
-import { Token } from '@modules/auth/types/token.type';
+import { TokenDto } from '@modules/auth/types/token.type';
 import { UserDomainModel } from '@modules/user/domain.types/user';
-import { UserDto } from '@modules/user/dto';
 import {
   Body,
   Controller,
@@ -50,18 +49,18 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('/signup')
   async signup(@Body() signupDto: SignupDto): Promise<APIResponse> {
-    const data: { user: UserDomainModel; token: Token } =
+    const data: { user: UserDomainModel; token: TokenDto } =
       await this.authService.signup(signupDto);
 
     const responseEntity: LoginApiResponse = {
-      user: new UserDto(data.user),
+      user: data.user,
       token: data.token,
     };
 
     const apiResponse: APIResponse = {
       message: 'User logged in successfully!',
       data: {
-        entity: responseEntity,
+        entity: new LoginApiResponse(responseEntity),
       },
     };
 
@@ -74,14 +73,16 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('/login')
   async logIn(@Request() req): Promise<APIResponse> {
-    const tokens: Token = await this.authService.login(req.user);
+    const tokenDto: TokenDto = await this.authService.login(req.user);
+    const responseEntity: LoginApiResponse = {
+      user: req.user,
+      token: tokenDto,
+    };
+
     const apiResponse: APIResponse = {
       message: 'User logged in successfully!',
       data: {
-        entity: {
-          user: req.user,
-          tokens: tokens,
-        },
+        entity: new LoginApiResponse(responseEntity),
       },
     };
     return apiResponse;
@@ -92,7 +93,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('/login-otp')
   async loginOtp(@Request() req): Promise<APIResponse> {
-    const tokens: Token = await this.authService.login(req.user);
+    const tokens: TokenDto = await this.authService.login(req.user);
     const apiResponse: APIResponse = {
       message: 'User logged in successfully!',
       data: {

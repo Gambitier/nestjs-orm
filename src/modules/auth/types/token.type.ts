@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 
-export class Token {
+export class TokenDto {
   @ApiProperty()
+  @Expose()
   accessToken: string;
 
   @Exclude()

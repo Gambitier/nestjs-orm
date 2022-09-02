@@ -1,4 +1,3 @@
-import { LoginDto } from '@modules/auth/dto';
 import {
   CreateUserDomainModel,
   UserDomainModel,
@@ -9,6 +8,7 @@ import {
 export const IUserRepository = Symbol('IUserRepository');
 
 export interface IUserRepository {
-  findFirstOrThrowByLoginDto(loginDto: LoginDto): Promise<UserDomainModel>;
+  findFirstByEmailOrThrow(email: string): Promise<UserDomainModel>;
+
   createUser(model: CreateUserDomainModel): Promise<UserDomainModel>;
 }

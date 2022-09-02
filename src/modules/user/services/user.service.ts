@@ -1,4 +1,3 @@
-import { LoginDto } from '@modules/auth/dto';
 import {
   CreateUserDomainModel,
   UserDomainModel,
@@ -21,8 +20,8 @@ export class UserService implements IUserService {
     //
   }
 
-  findFirstOrThrowByLoginDto(loginDto: LoginDto): Promise<UserDomainModel> {
-    return this.userRepository.findFirstOrThrowByLoginDto(loginDto);
+  findFirstByEmailOrThrow(email: string): Promise<UserDomainModel> {
+    return this.userRepository.findFirstByEmailOrThrow(email);
   }
 
   createUser(model: CreateUserDomainModel): Promise<UserDomainModel> {

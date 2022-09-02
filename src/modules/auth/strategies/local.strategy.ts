@@ -1,3 +1,4 @@
+import { compareHash } from '@common/utils';
 import { LoginDto } from '@modules/auth/dto';
 import { UserDomainModel } from '@modules/user/domain.types/user';
 import { IUserService } from '@modules/user/services/user.service.interface';
@@ -28,11 +29,9 @@ export class LocalStrategy extends PassportStrategy(
       password: password,
     });
 
+    let user: UserDomainModel;
     try {
-      const user: UserDomainModel =
-        await this.userService.findFirstOrThrowByLoginDto(loginDto);
-
-      return user;
+      user = await this.userService.findFirstByEmailOrThrow(loginDto.email);
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw new BadRequestException('Incorrect email or password');
@@ -40,5 +39,11 @@ export class LocalStrategy extends PassportStrategy(
 
       throw error;
     }
+
+    if (!compareHash(loginDto.password, user.password)) {
+      throw new BadRequestException('Incorrect password');
+    }
+
+    return user;
   }
 }
