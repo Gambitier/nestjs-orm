@@ -20,7 +20,12 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector), {
+      excludeExtraneousValues: true,
+    }),
+  );
 
   // Prisma interferes with NestJS enableShutdownHooks.
   // Prisma listens for shutdown signals and will call process.exit()

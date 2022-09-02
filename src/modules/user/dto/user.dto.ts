@@ -1,6 +1,7 @@
 import { UserRoleDto } from '@modules/user/dto/user.role.dto';
+import { GenderEnum } from '@modules/user/enums/gender.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail } from 'class-validator';
+import { Expose, Type } from 'class-transformer';
 
 export class UserDto {
   constructor(props: UserDto) {
@@ -8,36 +9,47 @@ export class UserDto {
   }
 
   @ApiProperty()
+  @Expose()
   id: string;
 
   @ApiProperty()
-  firstName: string;
-
-  @ApiProperty()
-  middleName: string;
-
-  @ApiProperty()
-  lastName: string;
-
-  @ApiProperty()
+  @Expose()
   prefix: string;
 
   @ApiProperty()
-  phone: string;
+  @Expose()
+  firstName: string;
 
   @ApiProperty()
-  @IsEmail()
+  @Expose()
+  middleName: string;
+
+  @ApiProperty()
+  @Expose()
+  lastName: string;
+
+  @ApiProperty()
+  @Expose()
   email: string;
 
   @ApiProperty()
-  gender: string;
+  @Expose()
+  phone: string;
 
   @ApiProperty()
+  @Expose()
+  gender: GenderEnum;
+
+  @ApiProperty()
+  @Expose()
   dateOfBirth: Date;
 
   @ApiProperty()
+  @Expose()
   createdAt: Date;
 
   @ApiProperty()
+  @Expose()
+  @Type(() => UserRoleDto)
   userRoles: UserRoleDto[];
 }
