@@ -12,6 +12,7 @@ import { IAuthService } from '@modules/auth/services/auth.service.interface';
 import { jwtConstants } from '@modules/auth/strategies/constants';
 import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
 import { Token } from '@modules/auth/types/token.type';
+import { UserDomainModel } from '@modules/user/domain.types/user';
 import { UserDto } from '@modules/user/dto';
 import { IUserService } from '@modules/user/services/user.service.interface';
 import { Inject, Injectable } from '@nestjs/common';
@@ -31,7 +32,9 @@ export class AuthService implements IAuthService {
     //
   }
 
-  async signup(signupDto: SignupDto): Promise<{ user: UserDto; token: Token }> {
+  async signup(
+    signupDto: SignupDto,
+  ): Promise<{ user: UserDomainModel; token: Token }> {
     const user = await this.userService.createUser({
       ...signupDto,
       userRoles: [UserRoleEnum.USER],

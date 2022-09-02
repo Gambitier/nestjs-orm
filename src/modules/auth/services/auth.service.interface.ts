@@ -8,6 +8,7 @@ import {
 } from '@modules/auth/dto';
 import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
 import { Token } from '@modules/auth/types/token.type';
+import { UserDomainModel } from '@modules/user/domain.types/user';
 import { UserDto } from '@modules/user/dto';
 
 ///////////////////////////////////////////////////////////
@@ -15,7 +16,9 @@ import { UserDto } from '@modules/user/dto';
 export const IAuthService = Symbol('IAuthService');
 
 export interface IAuthService {
-  signup(signupDto: SignupDto): Promise<{ user: UserDto; token: Token }>;
+  signup(
+    signupDto: SignupDto,
+  ): Promise<{ user: UserDomainModel; token: Token }>;
 
   resetPassword(resetPasswordDto: ResetPassTokenDto): Promise<boolean>;
 

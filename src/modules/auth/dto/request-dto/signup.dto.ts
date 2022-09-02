@@ -1,6 +1,7 @@
+import { generatePassword, hashData } from '@common/utils';
 import { GenderEnum } from '@modules/user/enums/gender.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Exclude, Transform, Type } from 'class-transformer';
 import {
   IsDate,
   IsEmail,
@@ -9,6 +10,7 @@ import {
   IsString,
   Length,
 } from 'class-validator';
+import * as _ from 'lodash';
 
 export class SignupDto {
   constructor(props: SignupDto) {
@@ -42,6 +44,16 @@ export class SignupDto {
 
   @ApiProperty()
   @IsString()
+  @Exclude({ toPlainOnly: true })
+  @Transform(
+    ({ value }) => {
+      if (_.isEmpty(value)) {
+        value = generatePassword();
+      }
+      return hashData(value);
+    },
+    { toClassOnly: true },
+  )
   password: string;
 
   @ApiProperty()

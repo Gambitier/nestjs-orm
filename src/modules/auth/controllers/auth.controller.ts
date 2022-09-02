@@ -14,6 +14,7 @@ import {
 import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
 import { IAuthService } from '@modules/auth/services';
 import { Token } from '@modules/auth/types/token.type';
+import { UserDomainModel } from '@modules/user/domain.types/user';
 import { UserDto } from '@modules/user/dto';
 import {
   Body,
@@ -45,15 +46,14 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('/signup')
   async signup(@Body() signupDto: SignupDto): Promise<ApiResponse> {
-    const data: { user: UserDto; token: Token } = await this.authService.signup(
-      signupDto,
-    );
+    const data: { user: UserDomainModel; token: Token } =
+      await this.authService.signup(signupDto);
 
     const apiResponse: ApiResponse = {
       message: 'User logged in successfully!',
       data: {
         entity: {
-          user: data.user,
+          user: new UserDto(data.user),
           token: data.token,
         },
       },
