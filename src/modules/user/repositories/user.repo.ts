@@ -1,13 +1,13 @@
 import { UserRoleEnum } from '@modules/auth/common';
+import { IDatabaseErrorHandler } from '@modules/database-error-handler/database.error.handler.interface';
 import {
   CreateUserDomainModel,
   UserDomainModel,
 } from '@modules/user/domain.types/user';
 import { GenderEnum } from '@modules/user/enums/gender.enum';
 import { IUserRepository } from '@modules/user/repositories/user.repo.interface';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Prisma, User, UserRole } from '@prisma/client';
-import { HandlePrismaErrors } from 'src/prisma.helpers/prisma.error.handler.utils';
 import { PrismaService } from 'src/prisma.service';
 
 /////////////////////////////////////////////////////
@@ -22,7 +22,11 @@ export class UserRepository implements IUserRepository {
     Prisma.RejectOnNotFound | Prisma.RejectPerOperation
   >;
 
-  constructor(private prismaService: PrismaService) {
+  constructor(
+    private prismaService: PrismaService,
+    @Inject(IDatabaseErrorHandler)
+    private databaseErrorHandler: IDatabaseErrorHandler,
+  ) {
     this._userEntity = prismaService.user;
   }
 
@@ -52,7 +56,7 @@ export class UserRepository implements IUserRepository {
         },
       });
     } catch (err) {
-      HandlePrismaErrors(err);
+      this.databaseErrorHandler.HandleError(err);
     }
 
     const domainModel: UserDomainModel = {

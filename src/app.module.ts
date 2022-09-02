@@ -1,4 +1,6 @@
 import { AuthModule } from '@modules/auth/auth.module';
+import { IDatabaseErrorHandler } from '@modules/database-error-handler/database.error.handler.interface';
+import { PrismaDatabaseErrorHandler } from '@modules/database-error-handler/prisma/prisma.error.handler';
 import { UserModule } from '@modules/user/user.module';
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -30,6 +32,10 @@ import { PrismaService } from 'src/prisma.service';
     //   provide: APP_FILTER,
     //   useClass: AllExceptionsFilter,
     // },
+    {
+      provide: IDatabaseErrorHandler,
+      useClass: PrismaDatabaseErrorHandler,
+    },
   ],
 })
 export class AppModule {
