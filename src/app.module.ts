@@ -1,6 +1,5 @@
 import { AuthModule } from '@modules/auth/auth.module';
-import { IDatabaseErrorHandler } from '@modules/database-error-handler/database.error.handler.interface';
-import { PrismaDatabaseErrorHandler } from '@modules/database-error-handler/prisma/prisma.error.handler';
+import { DatabaseErrorHandlerModule } from '@modules/database-error-handler/database.error.handler.module';
 import { UserModule } from '@modules/user/user.module';
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -8,7 +7,7 @@ import { APIResponseInterceptor } from 'src/interceptors/api.response.intercepto
 import { PrismaService } from 'src/prisma.service';
 
 @Module({
-  imports: [UserModule, AuthModule],
+  imports: [UserModule, AuthModule, DatabaseErrorHandlerModule],
   controllers: [],
   providers: [
     PrismaService,
@@ -32,10 +31,6 @@ import { PrismaService } from 'src/prisma.service';
     //   provide: APP_FILTER,
     //   useClass: AllExceptionsFilter,
     // },
-    {
-      provide: IDatabaseErrorHandler,
-      useClass: PrismaDatabaseErrorHandler,
-    },
   ],
 })
 export class AppModule {
