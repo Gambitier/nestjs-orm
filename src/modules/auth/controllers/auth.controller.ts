@@ -44,7 +44,7 @@ export class AuthController {
   ) {}
 
   @ApiBody({ type: SignupDto })
-  @ApiResponse({ type: LoginApiResponse })
+  @ApiResponse({ status: HttpStatus.OK, type: LoginApiResponse })
   @AllowAnonymous() // pass jwt authentication
   @HttpCode(HttpStatus.OK)
   @Post('/signup')
@@ -52,13 +52,15 @@ export class AuthController {
     const data: { user: UserDomainModel; token: Token } =
       await this.authService.signup(signupDto);
 
+    const responseEntity: LoginApiResponse = {
+      user: new UserDto(data.user),
+      token: data.token,
+    };
+
     const apiResponse: APIResponse = {
       message: 'User logged in successfully!',
       data: {
-        entity: {
-          user: new UserDto(data.user),
-          token: data.token,
-        },
+        entity: responseEntity,
       },
     };
 
