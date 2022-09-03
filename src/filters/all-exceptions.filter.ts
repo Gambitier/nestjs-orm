@@ -10,6 +10,7 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
@@ -17,6 +18,8 @@ import { HttpAdapterHost } from '@nestjs/core';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
+  private readonly _logger = new Logger(AllExceptionsFilter.name);
+
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   catch(error: unknown, host: ArgumentsHost): void {
@@ -44,6 +47,16 @@ export class AllExceptionsFilter implements ExceptionFilter {
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
       message: mesage,
     };
+
+    this._logger.error({
+      ...responseBody,
+      stackTrace:
+        error instanceof BaseDatabaseError ||
+        error instanceof HttpException ||
+        error instanceof Error
+          ? error.stack
+          : undefined,
+    });
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
