@@ -4,12 +4,13 @@ import { JwtFromQueryParamStrategy } from '@modules/auth/strategies/jwt.query.pa
 import { JwtStrategy } from '@modules/auth/strategies/jwt.strategy';
 import { LocalStrategy } from '@modules/auth/strategies/local.strategy';
 import { OTPStrategy } from '@modules/auth/strategies/otp.strategy';
+import { CommunicationModule } from '@modules/communication/communication.module';
 import { UserModule } from '@modules/user/user.module';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [JwtModule.register({}), UserModule],
+  imports: [JwtModule.register({}), UserModule, CommunicationModule],
   controllers: [AuthController],
   providers: [
     AuthServiceProvider,

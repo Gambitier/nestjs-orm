@@ -11,10 +11,16 @@ import { IAuthService } from '@modules/auth/services/auth.service.interface';
 import { jwtConstants } from '@modules/auth/strategies/constants';
 import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
 import { TokenDto } from '@modules/auth/types/token.type';
+import { IEmailService } from '@modules/communication/services';
 import { UserDomainModel } from '@modules/user/domain.types/user';
 import { UserDto, UserRoleDto } from '@modules/user/dto';
 import { IUserService } from '@modules/user/services/user.service.interface';
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 /////////////////////////////////////////////////////
@@ -25,8 +31,12 @@ export class AuthService implements IAuthService {
    */
   constructor(
     private jwtService: JwtService,
+
     @Inject(IUserService)
     private readonly userService: IUserService,
+
+    @Inject(IEmailService)
+    private readonly emailService: IEmailService,
   ) {
     //
   }
@@ -51,10 +61,41 @@ export class AuthService implements IAuthService {
     throw new Error('Method not implemented.');
   }
 
-  emailResetPasswordLink(
+  async emailResetPasswordLink(
     forgetPasswordDto: ForgetPasswordDto,
   ): Promise<boolean> {
-    throw new Error('Method not implemented.');
+    let user: UserDomainModel;
+
+    try {
+      user = await this.userService.findFirstByEmailOrThrow(
+        forgetPasswordDto.email,
+      );
+    } catch (err) {
+      if (err instanceof BadRequestException) {
+        // TODO throw UserNotFoundException
+        throw new BadRequestException('User not found');
+      }
+
+      throw err;
+    }
+
+    const token: TokenDto = await this.login(user);
+
+    // Note the token must be sent as query parameter and not as url param
+    // this is bcoz we can use passport strategy. e.g defined in this repo 'JwtFromQueryParamStrategy'
+    const emailSent = await this.emailService.sendResetPasswordEmail({
+      email: user.email,
+      // TODO use config service instead of process.env
+      resetLink: `${process.env.FRONTEND_URL}/reset-password?token=${token.accessToken}`,
+    });
+
+    if (!emailSent) {
+      throw new InternalServerErrorException(
+        'Problem encountered while sending email',
+      );
+    }
+
+    return true;
   }
 
   async login(user: UserDomainModel): Promise<TokenDto> {

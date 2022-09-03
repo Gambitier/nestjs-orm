@@ -39,6 +39,7 @@ export class UserRepository implements IUserRepository {
       entity = await this._userEntity.findFirstOrThrow({
         where: {
           email: email,
+          deleted: null,
         },
         include: {
           userRoles: true,

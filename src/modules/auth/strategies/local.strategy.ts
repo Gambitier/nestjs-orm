@@ -34,6 +34,7 @@ export class LocalStrategy extends PassportStrategy(
       user = await this.userService.findFirstByEmailOrThrow(loginDto.email);
     } catch (error) {
       if (error instanceof BadRequestException) {
+        // TODO throw UserNotFoundException
         throw new BadRequestException('Incorrect email or password');
       }
 

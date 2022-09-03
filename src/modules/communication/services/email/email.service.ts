@@ -66,7 +66,7 @@ export class EmailService implements IEmailService {
   }
 
   async sendResetPasswordEmail(args: {
-    action_url: string;
+    resetLink: string;
     email: string;
   }): Promise<boolean> {
     try {
@@ -75,7 +75,7 @@ export class EmailService implements IEmailService {
         subject: 'Reset Password',
         template: 'reset-password',
         context: {
-          action_url: args.action_url,
+          action_url: args.resetLink,
         },
       });
       return true;
