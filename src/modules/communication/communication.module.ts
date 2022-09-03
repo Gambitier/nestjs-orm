@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TwilioService } from 'nestjs-twilio';
+// import { TwilioService } from 'nestjs-twilio';
 import { CommunicationController } from './controller/CommunicationController';
 import { EmailServiceProvider, SmsServiceProvider } from './providers';
 
