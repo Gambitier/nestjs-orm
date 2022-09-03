@@ -1,3 +1,4 @@
+import { UpdatePasswordDto } from '@modules/auth/dto';
 import {
   CreateUserDomainModel,
   UserDomainModel,
@@ -18,6 +19,17 @@ export class UserService implements IUserService {
     private userRepository: IUserRepository,
   ) {
     //
+  }
+
+  resetUserPassword(
+    updatePasswordDto: UpdatePasswordDto,
+    userId: string,
+  ): Promise<boolean> {
+    return this.userRepository.updatePassword(userId, updatePasswordDto);
+  }
+
+  findFirstByIdOrThrow(userId: string): Promise<UserDomainModel> {
+    return this.userRepository.findFirstByIdOrThrow(userId);
   }
 
   findFirstByEmailOrThrow(email: string): Promise<UserDomainModel> {

@@ -1,4 +1,5 @@
 import { UserRoleEnum } from '@modules/auth/common';
+import { UpdatePasswordDto } from '@modules/auth/dto';
 import { IDatabaseErrorHandler } from '@modules/database-error-handler/database.error.handler.interface';
 import {
   CreateUserDomainModel,
@@ -23,11 +24,53 @@ export class UserRepository implements IUserRepository {
   >;
 
   constructor(
-    private prismaService: PrismaService,
+    prismaService: PrismaService,
     @Inject(IDatabaseErrorHandler)
-    private databaseErrorHandler: IDatabaseErrorHandler,
+    private _databaseErrorHandler: IDatabaseErrorHandler,
   ) {
     this._userEntity = prismaService.user;
+  }
+
+  async updatePassword(
+    userId: string,
+    updatePasswordDto: UpdatePasswordDto,
+  ): Promise<boolean> {
+    try {
+      await this._userEntity.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          password: updatePasswordDto.newPassword,
+        },
+      });
+    } catch (err) {
+      this._databaseErrorHandler.HandleError(err);
+    }
+
+    return true;
+  }
+
+  async findFirstByIdOrThrow(userId: string): Promise<UserDomainModel> {
+    let entity: User & {
+      userRoles: UserRole[];
+    };
+
+    try {
+      entity = await this._userEntity.findFirstOrThrow({
+        where: {
+          id: userId,
+          deleted: null,
+        },
+        include: {
+          userRoles: true,
+        },
+      });
+    } catch (err) {
+      this._databaseErrorHandler.HandleError(err);
+    }
+
+    return this.getUserDomainModel(entity);
   }
 
   async findFirstByEmailOrThrow(email: string): Promise<UserDomainModel> {
@@ -46,7 +89,7 @@ export class UserRepository implements IUserRepository {
         },
       });
     } catch (err) {
-      this.databaseErrorHandler.HandleError(err);
+      this._databaseErrorHandler.HandleError(err);
     }
 
     return this.getUserDomainModel(entity);
@@ -78,7 +121,7 @@ export class UserRepository implements IUserRepository {
         },
       });
     } catch (err) {
-      this.databaseErrorHandler.HandleError(err);
+      this._databaseErrorHandler.HandleError(err);
     }
 
     return this.getUserDomainModel(entity);

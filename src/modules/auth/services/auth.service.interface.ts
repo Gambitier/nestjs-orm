@@ -3,9 +3,10 @@ import {
   GenerateOtpDto,
   OtpLoginDto,
   OtpResponseDto,
-  ResetPassTokenDto,
+  UpdatePasswordDto,
 } from '@modules/auth/dto';
 import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
+import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
 import { TokenDto } from '@modules/auth/types/token.type';
 import { UserDomainModel } from '@modules/user/domain.types/user';
 import { UserDto } from '@modules/user/dto';
@@ -19,7 +20,10 @@ export interface IAuthService {
     signupDto: SignupDto,
   ): Promise<{ user: UserDomainModel; token: TokenDto }>;
 
-  resetPassword(resetPasswordDto: ResetPassTokenDto): Promise<boolean>;
+  resetPassword(
+    resetPasswordDto: UpdatePasswordDto,
+    user: JwtUserData,
+  ): Promise<boolean>;
 
   emailResetPasswordLink(
     forgetPasswordDto: ForgetPasswordDto,

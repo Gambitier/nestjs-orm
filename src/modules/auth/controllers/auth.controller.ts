@@ -6,14 +6,14 @@ import {
   OTPAuthGuard,
 } from '@modules/auth/common';
 import {
-  ChangePasswordDto,
   ForgetPasswordDto,
   GenerateOtpDto,
   LoginDto,
-  ResetPassTokenDto,
+  UpdatePasswordDto,
 } from '@modules/auth/dto';
 import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
 import { IAuthService } from '@modules/auth/services';
+import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
 import { TokenDto } from '@modules/auth/types/token.type';
 import { UserDomainModel } from '@modules/user/domain.types/user';
 import {
@@ -22,8 +22,6 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
-  Param,
-  ParseUUIDPipe,
   Post,
   Query,
   Request,
@@ -118,30 +116,6 @@ export class AuthController {
     return apiResponse;
   }
 
-  @HttpCode(HttpStatus.OK)
-  @Post('/change-password/:userId')
-  async changePassword(
-    @Param('userId', new ParseUUIDPipe()) userId: string,
-    @Body() changePasswordDto: ChangePasswordDto,
-  ): Promise<APIResponse> {
-    const dto: ResetPassTokenDto = {
-      newPassword: changePasswordDto.newPassword,
-      userId: userId,
-    };
-
-    const resetPasswordDto: ResetPassTokenDto = new ResetPassTokenDto(dto);
-    const status: boolean = await this.authService.resetPassword(
-      resetPasswordDto,
-    );
-
-    const apiResponse: APIResponse = {
-      message: 'Password changed successfully!',
-      data: status,
-    };
-
-    return apiResponse;
-  }
-
   @AllowAnonymous()
   @HttpCode(HttpStatus.OK)
   @Post('/forget-password')
@@ -158,25 +132,50 @@ export class AuthController {
     return apiResponse;
   }
 
+  @HttpCode(HttpStatus.OK)
+  @Post('/change-password')
+  async changePassword(
+    @Request() req,
+    @Body() changePasswordDto: UpdatePasswordDto,
+  ): Promise<APIResponse> {
+    const user = req.user as JwtUserData;
+    const dto: UpdatePasswordDto = {
+      newPassword: changePasswordDto.newPassword,
+    };
+
+    const status: boolean = await this.authService.resetPassword(dto, user);
+
+    const apiResponse: APIResponse = {
+      message: 'Password changed successfully!',
+      data: status,
+    };
+
+    return apiResponse;
+  }
+
   @AllowAnonymous()
   @UseGuards(JwtQueryParamGuard) // but authorize with token from query param
   @HttpCode(HttpStatus.OK)
-  @Post('/reset/:userId')
+  @Post('/reset-password')
   async resetPassToken(
-    @Param('userId', new ParseUUIDPipe()) userId: string,
+    @Request() req,
     @Query('token') token: string,
-    @Body() resetPasswordDto: ResetPassTokenDto,
+    @Body() resetPasswordDto: UpdatePasswordDto,
   ): Promise<APIResponse> {
-    // use this url http://localhost:7575/api/v1/user/reset/{{nestjs_userid}}?token={{nestjs_token}}
+    // use this url http://localhost:7575/api/v1/user/reset/{{userid}}?token={{token}}
 
-    resetPasswordDto.userId = userId;
+    const user = req.user as JwtUserData;
+
     const status: boolean = await this.authService.resetPassword(
       resetPasswordDto,
+      user,
     );
+
     const apiResponse: APIResponse = {
       message: 'Password updated successfully!',
       data: status,
     };
+
     return apiResponse;
   }
 

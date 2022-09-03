@@ -45,6 +45,14 @@ export class SignupDto {
   @ApiProperty()
   @IsString()
   @Exclude({ toPlainOnly: true })
+  // TODO enable password strength validation
+  // @Matches(passwordRegex, {
+  //   message:
+  //     'New password does not fit the security criteria. \
+  //      The new password must be between 7 to 15 character long, \
+  //      should have atleast 1 digit, 1 special character, \
+  //      1 lower-case and 1 uppercase letter.',
+  // })
   @Transform(
     ({ value }) => {
       if (_.isEmpty(value)) {

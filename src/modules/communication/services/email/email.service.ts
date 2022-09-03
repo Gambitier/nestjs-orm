@@ -6,6 +6,15 @@ import { Injectable } from '@nestjs/common';
 export class EmailService implements IEmailService {
   constructor(private readonly mailerService: MailerService) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async sendPasswordResetSuccessEmail(args: {
+    firstName: string;
+    email: string;
+  }): Promise<boolean> {
+    // TODO add sendPasswordResetSuccessEmail template
+    return true;
+  }
+
   sendExampleEmail() {
     this.mailerService
       .sendMail({
@@ -65,7 +74,7 @@ export class EmailService implements IEmailService {
       .catch((error) => console.error(error));
   }
 
-  async sendResetPasswordEmail(args: {
+  async sendResetPasswordLinkEmail(args: {
     resetLink: string;
     email: string;
   }): Promise<boolean> {

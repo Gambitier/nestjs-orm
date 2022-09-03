@@ -1,10 +1,11 @@
+import { compareHash } from '@common/utils';
 import { UserRoleEnum } from '@modules/auth/common';
 import {
   ForgetPasswordDto,
   GenerateOtpDto,
   OtpLoginDto,
   OtpResponseDto,
-  ResetPassTokenDto,
+  UpdatePasswordDto,
 } from '@modules/auth/dto';
 import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
 import { IAuthService } from '@modules/auth/services/auth.service.interface';
@@ -22,6 +23,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { NotFoundError } from '@prisma/client/runtime';
 
 /////////////////////////////////////////////////////
 @Injectable()
@@ -57,8 +59,44 @@ export class AuthService implements IAuthService {
     };
   }
 
-  resetPassword(resetPasswordDto: ResetPassTokenDto): Promise<boolean> {
-    throw new Error('Method not implemented.');
+  async resetPassword(
+    resetPasswordDto: UpdatePasswordDto,
+    jwtUserData: JwtUserData,
+  ): Promise<boolean> {
+    let user: UserDomainModel;
+
+    try {
+      user = await this.userService.findFirstByIdOrThrow(jwtUserData.id);
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw new NotFoundError('User does not exist');
+      }
+
+      throw error;
+    }
+
+    const passwordMatch: boolean = compareHash(
+      resetPasswordDto.newPassword,
+      user.password,
+    );
+
+    if (passwordMatch) {
+      return true; // password changed!
+    }
+
+    const status: boolean = await this.userService.resetUserPassword(
+      resetPasswordDto,
+      jwtUserData.id,
+    );
+
+    if (status) {
+      this.emailService.sendPasswordResetSuccessEmail({
+        email: jwtUserData.email,
+        firstName: jwtUserData.firstName,
+      });
+    }
+
+    return status;
   }
 
   async emailResetPasswordLink(
@@ -83,7 +121,7 @@ export class AuthService implements IAuthService {
 
     // Note the token must be sent as query parameter and not as url param
     // this is bcoz we can use passport strategy. e.g defined in this repo 'JwtFromQueryParamStrategy'
-    const emailSent = await this.emailService.sendResetPasswordEmail({
+    const emailSent = await this.emailService.sendResetPasswordLinkEmail({
       email: user.email,
       // TODO use config service instead of process.env
       resetLink: `${process.env.FRONTEND_URL}/reset-password?token=${token.accessToken}`,
