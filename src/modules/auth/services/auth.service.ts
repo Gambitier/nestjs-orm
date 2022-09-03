@@ -13,6 +13,10 @@ import { jwtConstants } from '@modules/auth/strategies/constants';
 import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
 import { TokenDto } from '@modules/auth/types/token.type';
 import { IEmailService } from '@modules/communication/services';
+import {
+  DataNotFoundError,
+  UniqueConstraintFailedError,
+} from '@modules/database-error-handler/errors';
 import { UserDomainModel } from '@modules/user/domain.types/user';
 import { UserDto, UserRoleDto } from '@modules/user/dto';
 import { IUserService } from '@modules/user/services/user.service.interface';
@@ -23,9 +27,9 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { NotFoundError } from '@prisma/client/runtime';
 
 /////////////////////////////////////////////////////
+
 @Injectable()
 export class AuthService implements IAuthService {
   /**
@@ -46,10 +50,20 @@ export class AuthService implements IAuthService {
   async signup(
     signupDto: SignupDto,
   ): Promise<{ user: UserDomainModel; token: TokenDto }> {
-    const user = await this.userService.createUser({
-      ...signupDto,
-      userRoles: [UserRoleEnum.USER],
-    });
+    let user: UserDomainModel;
+
+    try {
+      user = await this.userService.createUser({
+        ...signupDto,
+        userRoles: [UserRoleEnum.USER],
+      });
+    } catch (err) {
+      if (err instanceof UniqueConstraintFailedError) {
+        throw new BadRequestException(err.message);
+      }
+
+      throw err;
+    }
 
     const token = await this.getToken(user);
 
@@ -68,8 +82,8 @@ export class AuthService implements IAuthService {
     try {
       user = await this.userService.findFirstByIdOrThrow(jwtUserData.id);
     } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw new NotFoundError('User does not exist');
+      if (error instanceof DataNotFoundError) {
+        throw new BadRequestException('User does not exist');
       }
 
       throw error;
@@ -109,8 +123,7 @@ export class AuthService implements IAuthService {
         forgetPasswordDto.email,
       );
     } catch (err) {
-      if (err instanceof BadRequestException) {
-        // TODO throw UserNotFoundException
+      if (err instanceof DataNotFoundError) {
         throw new BadRequestException('User not found');
       }
 

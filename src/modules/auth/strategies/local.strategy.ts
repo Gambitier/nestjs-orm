@@ -1,5 +1,6 @@
 import { compareHash } from '@common/utils';
 import { LoginDto } from '@modules/auth/dto';
+import { DataNotFoundError } from '@modules/database-error-handler/errors';
 import { UserDomainModel } from '@modules/user/domain.types/user';
 import { IUserService } from '@modules/user/services/user.service.interface';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
@@ -33,7 +34,7 @@ export class LocalStrategy extends PassportStrategy(
     try {
       user = await this.userService.findFirstByEmailOrThrow(loginDto.email);
     } catch (error) {
-      if (error instanceof BadRequestException) {
+      if (error instanceof DataNotFoundError) {
         throw new BadRequestException('Incorrect email or password');
       }
 

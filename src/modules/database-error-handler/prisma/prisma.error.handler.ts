@@ -1,6 +1,10 @@
 import { IDatabaseErrorHandler } from '@modules/database-error-handler/database.error.handler.interface';
+import {
+  DataNotFoundError,
+  UniqueConstraintFailedError,
+} from '@modules/database-error-handler/errors';
 import { PrismaError } from '@modules/database-error-handler/prisma/enums/prisma.error.code.enum';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 /////////////////////////////////////////////////////////////////////
@@ -16,7 +20,7 @@ export class PrismaDatabaseErrorHandler implements IDatabaseErrorHandler {
       const exception = error as PrismaClientKnownRequestError;
       this.HandlePrismaClientKnownRequestError(exception);
     } else if (error.name === 'NotFoundError') {
-      throw new BadRequestException(error.message);
+      throw new DataNotFoundError(error.message);
     }
 
     throw error;
@@ -28,7 +32,7 @@ export class PrismaDatabaseErrorHandler implements IDatabaseErrorHandler {
     switch (errorCode) {
       case PrismaError.UniqueConstraintViolation: {
         const msg = `${error.meta.target[0]} already in use`;
-        throw new BadRequestException(msg);
+        throw new UniqueConstraintFailedError(error.meta.target[0], msg);
       }
     }
   }
