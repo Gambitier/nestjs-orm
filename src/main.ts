@@ -2,8 +2,8 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { json, urlencoded } from 'express';
-import { AppModule } from './app.module';
-import { PrismaService } from './prisma.service';
+import { AppModule } from 'src/app.module';
+import { PrismaService } from 'src/prisma.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -20,7 +20,12 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector), {
+      excludeExtraneousValues: true,
+    }),
+  );
 
   // Prisma interferes with NestJS enableShutdownHooks.
   // Prisma listens for shutdown signals and will call process.exit()
@@ -48,7 +53,7 @@ async function bootstrap() {
     })
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-doc', app, document);
+  SwaggerModule.setup('swagger', app, document);
 
   const port = parseInt(process.env.PORT) || 7575;
   await app.listen(port, '0.0.0.0', function () {
