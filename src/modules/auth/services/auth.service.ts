@@ -17,15 +17,14 @@ import { UserDomainModel } from '@modules/user/domain.types/user';
 import { UserDto, UserRoleDto } from '@modules/user/dto';
 import { IUserService } from '@modules/user/services/user.service.interface';
 import {
-  BadRequestException,
   Inject,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { NotFoundError } from '@prisma/client/runtime';
 
 /////////////////////////////////////////////////////
+
 @Injectable()
 export class AuthService implements IAuthService {
   /**
@@ -46,7 +45,7 @@ export class AuthService implements IAuthService {
   async signup(
     signupDto: SignupDto,
   ): Promise<{ user: UserDomainModel; token: TokenDto }> {
-    const user = await this.userService.createUser({
+    const user: UserDomainModel = await this.userService.createUser({
       ...signupDto,
       userRoles: [UserRoleEnum.USER],
     });
@@ -63,17 +62,9 @@ export class AuthService implements IAuthService {
     resetPasswordDto: UpdatePasswordDto,
     jwtUserData: JwtUserData,
   ): Promise<boolean> {
-    let user: UserDomainModel;
-
-    try {
-      user = await this.userService.findFirstByIdOrThrow(jwtUserData.id);
-    } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw new NotFoundError('User does not exist');
-      }
-
-      throw error;
-    }
+    const user: UserDomainModel = await this.userService.findFirstByIdOrThrow(
+      jwtUserData.id,
+    );
 
     const passwordMatch: boolean = compareHash(
       resetPasswordDto.newPassword,
@@ -102,20 +93,8 @@ export class AuthService implements IAuthService {
   async emailResetPasswordLink(
     forgetPasswordDto: ForgetPasswordDto,
   ): Promise<boolean> {
-    let user: UserDomainModel;
-
-    try {
-      user = await this.userService.findFirstByEmailOrThrow(
-        forgetPasswordDto.email,
-      );
-    } catch (err) {
-      if (err instanceof BadRequestException) {
-        // TODO throw UserNotFoundException
-        throw new BadRequestException('User not found');
-      }
-
-      throw err;
-    }
+    const user: UserDomainModel =
+      await this.userService.findFirstByEmailOrThrow(forgetPasswordDto.email);
 
     const token: TokenDto = await this.login(user);
 

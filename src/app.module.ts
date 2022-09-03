@@ -5,9 +5,10 @@ import { DatabaseErrorHandlerModule } from '@modules/database-error-handler/data
 import { UserModule } from '@modules/user/user.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { TwilioModule } from 'nestjs-twilio';
 import { mailerModuleConfigs, twilioModuleConfig } from 'src/configs';
+import { AllExceptionsFilter } from 'src/filters/all-exceptions.filter';
 import { APIResponseInterceptor } from 'src/interceptors/api.response.interceptor';
 import { PrismaService } from 'src/prisma.service';
 
@@ -35,14 +36,10 @@ import { PrismaService } from 'src/prisma.service';
       provide: APP_INTERCEPTOR,
       useClass: APIResponseInterceptor,
     },
-    // {
-    //   provide: APP_FILTER,
-    //   useClass: HttpExceptionFilter,
-    // },
-    // {
-    //   provide: APP_FILTER,
-    //   useClass: AllExceptionsFilter,
-    // },
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
   ],
 })
 export class AppModule {
