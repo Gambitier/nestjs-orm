@@ -21,24 +21,28 @@ import { PrismaService } from 'src/prisma.service';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        const nodeEnv = configService.get<string>('NODE_ENV');
-        const shouldUsePrettyPrint = nodeEnv === 'local';
+        const NODE_ENV = configService.get<string>('NODE_ENV');
+        const shouldUsePrettyPrint = NODE_ENV === 'local';
         return {
           pinoHttp: {
+            level: NODE_ENV !== 'production' ? 'debug' : 'info',
             redact: [
               'req.headers',
               'req.remoteAddress',
               'req.remotePort',
               'res.headers',
             ],
-            transport: {
-              target: 'pino-pretty',
-              options: {
-                ignore: 'req.headers,res',
-                colorize: true,
-                levelFirst: true,
-              },
-            },
+            transport:
+              NODE_ENV !== 'production'
+                ? {
+                    target: 'pino-pretty',
+                    options: {
+                      ignore: 'req.headers,res',
+                      colorize: true,
+                      levelFirst: true,
+                    },
+                  }
+                : undefined,
             customSuccessMessage(req) {
               return `request completed | RquestId: ${req.id} | API: ${req.method}: ${req.url}`;
             },
