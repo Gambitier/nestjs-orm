@@ -2,6 +2,7 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { json, urlencoded } from 'express';
+import { Logger } from 'nestjs-pino';
 import { AppModule } from 'src/app.module';
 import { PrismaService } from 'src/prisma.service';
 
@@ -12,6 +13,8 @@ async function bootstrap() {
     bufferLogs: true,
     abortOnError: false,
   });
+
+  app.useLogger(app.get(Logger));
 
   app.useGlobalPipes(
     new ValidationPipe({

@@ -16,6 +16,7 @@ import { PrismaService } from 'src/prisma.service';
 
 @Module({
   imports: [
+    // LoggerModule.forRoot(),
     LoggerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
