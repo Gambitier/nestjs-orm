@@ -18,18 +18,13 @@ export class SmsService implements ISmsService {
     const callbackUrl: string =
       this.environmentVariablesService.getTwilioSmsWebHook();
 
-    try {
-      const msg = await this.twilioService.client.messages.create({
-        body: body,
-        from: this.environmentVariablesService.getSakshamPlatformPhoneNumber(),
-        to: `${countryCode}${targetPhoneNumber}`,
-        statusCallback: callbackUrl,
-      });
+    const msg = await this.twilioService.client.messages.create({
+      body: body,
+      from: this.environmentVariablesService.getSakshamPlatformPhoneNumber(),
+      to: `${countryCode}${targetPhoneNumber}`,
+      statusCallback: callbackUrl,
+    });
 
-      console.log('send twilio message response', JSON.stringify(msg));
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
+    console.log('send twilio message response', JSON.stringify(msg));
   }
 }

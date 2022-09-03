@@ -2,9 +2,9 @@ import { BaseDatabaseError } from '@modules/database-error-handler/errors/base.d
 
 export class UniqueConstraintFailedError extends BaseDatabaseError {
   fieldName: string;
-  constructor(fieldName: string, message?: string) {
-    super(message); // 'Error' breaks prototype chain here
+  constructor(fieldName: string, message: string) {
+    super(message);
     this.fieldName = fieldName;
-    Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
+    Object.setPrototypeOf(this, new.target.prototype);
   }
 }

@@ -38,6 +38,7 @@ export class LocalStrategy extends PassportStrategy(
         throw new BadRequestException('Incorrect email or password');
       }
 
+      // throw unhndled exception
       throw error;
     }
 

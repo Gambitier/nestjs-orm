@@ -78,19 +78,15 @@ export class EmailService implements IEmailService {
     resetLink: string;
     email: string;
   }): Promise<boolean> {
-    try {
-      await this.mailerService.sendMail({
-        to: args.email,
-        subject: 'Reset Password',
-        template: 'reset-password',
-        context: {
-          action_url: args.resetLink,
-        },
-      });
-      return true;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
+    await this.mailerService.sendMail({
+      to: args.email,
+      subject: 'Reset Password',
+      template: 'reset-password',
+      context: {
+        action_url: args.resetLink,
+      },
+    });
+
+    return true;
   }
 }
