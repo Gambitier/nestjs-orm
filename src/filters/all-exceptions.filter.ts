@@ -48,7 +48,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
       message: mesage,
     };
 
-    this._logger.error(responseBody);
+    this._logger.error({
+      ...responseBody,
+      stackTrace:
+        error instanceof BaseDatabaseError ||
+        error instanceof HttpException ||
+        error instanceof Error
+          ? error.stack
+          : undefined,
+    });
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
