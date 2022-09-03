@@ -1,4 +1,6 @@
-export class UniqueConstraintFailedError extends Error {
+import { BaseDatabaseError } from '@modules/database-error-handler/errors/base.database.error';
+
+export class UniqueConstraintFailedError extends BaseDatabaseError {
   fieldName: string;
   constructor(fieldName: string, message?: string) {
     super(message); // 'Error' breaks prototype chain here
