@@ -1,5 +1,5 @@
 import { AuthModule } from '@modules/auth/auth.module';
-import { JwtGuard } from '@modules/auth/common';
+import { JwtGuard, RolesGuard } from '@modules/auth/common';
 import { CommunicationModule } from '@modules/communication/communication.module';
 import { DatabaseErrorHandlerModule } from '@modules/database-error-handler/database.error.handler.module';
 import { UserModule } from '@modules/user/user.module';
@@ -92,10 +92,10 @@ import { PrismaService } from 'src/prisma.service';
       provide: APP_GUARD,
       useClass: JwtGuard,
     },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: RolesGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: APIResponseInterceptor,
