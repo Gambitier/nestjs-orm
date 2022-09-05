@@ -1,7 +1,7 @@
 import { ExceptionResponseBody } from '@common/types';
 import {
   DataNotFoundError,
-  UniqueConstraintFailedError,
+  UniqueConstraintFailedError
 } from '@modules/database-error-handler/errors';
 import { BaseDatabaseError } from '@modules/database-error-handler/errors/base.database.error';
 import {
@@ -10,7 +10,7 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
-  Logger,
+  Logger
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
@@ -65,10 +65,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
     let httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     let mesage = 'Something went wrong with database operation';
 
-    if (error instanceof DataNotFoundError) {
-      httpStatus = HttpStatus.BAD_REQUEST;
-      mesage = error.message;
-    } else if (error instanceof UniqueConstraintFailedError) {
+    if (
+      error instanceof DataNotFoundError ||
+      error instanceof UniqueConstraintFailedError
+    ) {
       httpStatus = HttpStatus.BAD_REQUEST;
       mesage = error.message;
     }
