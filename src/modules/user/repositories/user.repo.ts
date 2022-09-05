@@ -8,7 +8,7 @@ import {
 import { GenderEnum } from '@modules/user/enums/gender.enum';
 import { IUserRepository } from '@modules/user/repositories/user.repo.interface';
 import { Inject, Injectable } from '@nestjs/common';
-import { Prisma, User, UserRole } from '@prisma/client';
+import { Prisma, Role, User, UserRole } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 
 /////////////////////////////////////////////////////
@@ -96,15 +96,17 @@ export class UserRepository implements IUserRepository {
   }
 
   async createUser(model: CreateUserDomainModel): Promise<UserDomainModel> {
+    const rolesData = model.userRoles.map((item) => {
+      return {
+        role: item as Role,
+      };
+    });
+
     const data: Prisma.UserCreateInput = {
       ...model,
       userRoles: {
         createMany: {
-          data: model.userRoles.map((item) => {
-            return {
-              role: item,
-            };
-          }),
+          data: rolesData,
         },
       },
     };
