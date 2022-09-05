@@ -17,8 +17,8 @@ enum Role {
 }
 
 enum LibraryUserAccountRole {
-  Librarian
-  Member
+  LIBRARIAN
+  MEMBER
 }
 
 enum Gender {
