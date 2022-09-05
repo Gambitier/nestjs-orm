@@ -14,7 +14,7 @@ export type UserDomainModel = {
   gender: GenderEnum;
   dateOfBirth: Date;
   createdAt: Date;
-  userRoles: UserRoleDomainModel[];
+  userRoles?: UserRoleDomainModel[];
 };
 
 export type CreateUserDomainModel = {

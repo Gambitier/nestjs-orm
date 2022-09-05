@@ -51,7 +51,7 @@ export class AuthController {
       await this.authService.signup(signupDto);
 
     const responseEntity: LoginApiResponse = {
-      user: data.user,
+      user: data.user as JwtUserData,
       token: data.token,
     };
 
@@ -73,7 +73,7 @@ export class AuthController {
   async logIn(@Request() req): Promise<APIResponse> {
     const tokenDto: TokenDto = await this.authService.login(req.user);
     const responseEntity: LoginApiResponse = {
-      user: req.user,
+      user: req.user as JwtUserData,
       token: tokenDto,
     };
 
