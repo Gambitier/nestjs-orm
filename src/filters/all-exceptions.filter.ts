@@ -1,7 +1,7 @@
 import { ExceptionResponseBody } from '@common/types';
 import {
   DataNotFoundError,
-  UniqueConstraintFailedError
+  UniqueConstraintFailedError,
 } from '@modules/database-error-handler/errors';
 import { BaseDatabaseError } from '@modules/database-error-handler/errors/base.database.error';
 import {
@@ -10,7 +10,7 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
-  Logger
+  Logger,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
