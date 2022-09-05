@@ -16,6 +16,11 @@ enum Role {
   USER
 }
 
+enum LibraryUserAccountRole {
+  Librarian
+  Member
+}
+
 enum Gender {
   MALE
   FEMALE
@@ -40,9 +45,26 @@ model Library {
   deleted   DateTime? @db.Timestamptz(6)
   name      String    @db.VarChar(50)
 
-  addresses Address[]
-  users     User[]
-  books     Book[]
+  addresses           Address[]
+  books               Book[]
+  libraryUserAccounts LibraryUserAccount[]
+}
+
+model LibraryUserAccount {
+  id        String    @id @default(uuid()) @db.Uuid
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(6)
+  deleted   DateTime? @db.Timestamptz(6)
+
+  user   User                   @relation(fields: [userId], references: [id])
+  userId String                 @db.Uuid
+  role   LibraryUserAccountRole @default(Member)
+
+  library   Library @relation(fields: [libraryId], references: [id])
+  libraryId String  @db.Uuid
+
+  booksCreated  Book[]
+  booksBorrowed BookBorrowLog[]
 }
 
 model User {
@@ -60,13 +82,9 @@ model User {
   updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
   deleted     DateTime? @db.Timestamptz(6)
 
-  userRoles     UserRole[]
-  addresses     Address[]
-  booksCreated  Book[]
-  booksBorrowed BookBorrowLog[]
-
-  library   Library @relation(fields: [libraryId], references: [id])
-  libraryId String  @db.Uuid
+  userRoles       UserRole[]
+  addresses       Address[]
+  libraryAccounts LibraryUserAccount[]
 }
 
 model UserRole {
@@ -109,14 +127,15 @@ model Book {
   updatedAt     DateTime  @updatedAt @db.Timestamptz(6)
   deleted       DateTime? @db.Timestamptz(6)
 
-  createdByUser   User        @relation(fields: [createdByUserId], references: [id])
-  createdByUserId String      @db.Uuid
-  authors         Author[]
-  publishers      Publisher[]
-  copies          BookCopy[]
+  authors    Author[]
+  publishers Publisher[]
+  copies     BookCopy[]
 
   library   Library @relation(fields: [libraryId], references: [id])
   libraryId String  @db.Uuid
+
+  createdBy   LibraryUserAccount @relation(fields: [createdById], references: [id])
+  createdById String             @db.Uuid
 }
 
 model BookCopy {
@@ -173,11 +192,11 @@ model BookBorrowLog {
   dueDate    DateTime  @db.Date
   returnDate DateTime  @db.Date
 
+  borrowedBy   LibraryUserAccount @relation(fields: [borrowedById], references: [id])
+  borrowedById String             @db.Uuid
+
   bookCopy   BookCopy @relation(fields: [bookCopyId], references: [id])
   bookCopyId String   @db.Uuid
-
-  borrowedBy       User   @relation(fields: [borrowedByUserId], references: [id])
-  borrowedByUserId String @db.Uuid
 
   bookFineTransaction BookFineTransaction?
 }
