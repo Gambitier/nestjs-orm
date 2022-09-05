@@ -46,7 +46,7 @@ model Library {
   name      String    @db.VarChar(50)
 
   addresses           Address[]
-  books               Book[]
+  books               LibraryBook[]
   libraryUserAccounts LibraryUserAccount[]
 }
 
@@ -63,8 +63,9 @@ model LibraryUserAccount {
   library   Library @relation(fields: [libraryId], references: [id])
   libraryId String  @db.Uuid
 
-  booksCreated  Book[]
+  booksCreated  LibraryBook[]
   booksBorrowed BookBorrowLog[]
+  Book          Book[]
 }
 
 model User {
@@ -77,7 +78,7 @@ model User {
   phone       String    @unique @db.VarChar(15)
   password    String    @db.VarChar(256)
   gender      Gender    @default(UNSPECIFIED)
-  dateOfBirth DateTime? @db.Timestamptz(6)
+  dateOfBirth DateTime? @db.Date
   createdAt   DateTime  @default(now()) @db.Timestamptz(6)
   updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
   deleted     DateTime? @db.Timestamptz(6)
@@ -109,10 +110,42 @@ model Address {
   updatedAt     DateTime  @updatedAt @db.Timestamptz(6)
   deleted       DateTime? @db.Timestamptz(6)
 
-  User      User?    @relation(fields: [userId], references: [id])
-  userId    String?  @db.Uuid
-  library   Library? @relation(fields: [libraryId], references: [id])
-  libraryId String?  @db.Uuid
+  User        User?      @relation(fields: [userId], references: [id])
+  userId      String?    @db.Uuid
+  library     Library?   @relation(fields: [libraryId], references: [id])
+  libraryId   String?    @db.Uuid
+  Publisher   Publisher? @relation(fields: [publisherId], references: [id])
+  publisherId String?    @db.Uuid
+}
+
+model LibraryBook {
+  id        String    @id @default(uuid()) @db.Uuid
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(6)
+  deleted   DateTime? @db.Timestamptz(6)
+
+  bookInformation Book   @relation(fields: [bookId], references: [id])
+  bookId          String @db.Uuid
+
+  copies LibraryBookItem[]
+
+  library   Library @relation(fields: [libraryId], references: [id])
+  libraryId String  @db.Uuid
+
+  createdBy   LibraryUserAccount @relation(fields: [createdById], references: [id])
+  createdById String             @db.Uuid
+}
+
+model LibraryBookItem {
+  id        String    @id @default(uuid()) @db.Uuid
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(6)
+  deleted   DateTime? @db.Timestamptz(6)
+
+  book   LibraryBook @relation(fields: [bookId], references: [id])
+  bookId String      @db.Uuid
+
+  bookBorrowLogs BookBorrowLog[]
 }
 
 model Book {
@@ -129,40 +162,22 @@ model Book {
 
   authors    Author[]
   publishers Publisher[]
-  copies     BookCopy[]
-
-  library   Library @relation(fields: [libraryId], references: [id])
-  libraryId String  @db.Uuid
 
   createdBy   LibraryUserAccount @relation(fields: [createdById], references: [id])
   createdById String             @db.Uuid
+
+  libraryBook LibraryBook[]
 }
 
-model BookCopy {
+model Publisher {
   id        String    @id @default(uuid()) @db.Uuid
   createdAt DateTime  @default(now()) @db.Timestamptz(6)
   updatedAt DateTime  @updatedAt @db.Timestamptz(6)
   deleted   DateTime? @db.Timestamptz(6)
 
-  book   Book   @relation(fields: [bookId], references: [id])
-  bookId String @db.Uuid
-
-  bookBorrowLogs BookBorrowLog[]
-}
-
-model Publisher {
-  id          String    @id @default(uuid()) @db.Uuid
-  prefix      String    @db.VarChar(20)
-  firstName   String    @db.VarChar(50)
-  middleName  String    @db.VarChar(50)
-  lastName    String    @db.VarChar(50)
-  email       String    @unique @db.VarChar(100)
-  phone       String    @unique @db.VarChar(15)
-  gender      Gender    @default(UNSPECIFIED)
-  dateOfBirth DateTime? @db.Timestamptz(6)
-  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
-  deleted     DateTime? @db.Timestamptz(6)
+  name      String    @db.VarChar(400)
+  website   String    @db.VarChar(400)
+  addresses Address[]
 
   books Book[]
 }
@@ -176,7 +191,7 @@ model Author {
   email       String    @unique @db.VarChar(100)
   phone       String    @unique @db.VarChar(15)
   gender      Gender    @default(UNSPECIFIED)
-  dateOfBirth DateTime? @db.Timestamptz(6)
+  dateOfBirth DateTime? @db.Date
   createdAt   DateTime  @default(now()) @db.Timestamptz(6)
   updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
   deleted     DateTime? @db.Timestamptz(6)
@@ -195,8 +210,8 @@ model BookBorrowLog {
   borrowedBy   LibraryUserAccount @relation(fields: [borrowedById], references: [id])
   borrowedById String             @db.Uuid
 
-  bookCopy   BookCopy @relation(fields: [bookCopyId], references: [id])
-  bookCopyId String   @db.Uuid
+  bookCopy   LibraryBookItem @relation(fields: [bookCopyId], references: [id])
+  bookCopyId String          @db.Uuid
 
   bookFineTransaction BookFineTransaction?
 }
