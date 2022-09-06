@@ -17,6 +17,7 @@ enum Role {
 }
 
 enum LibraryUserAccountRole {
+  OWNER
   LIBRARIAN
   MEMBER
 }
