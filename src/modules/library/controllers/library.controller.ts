@@ -1,10 +1,11 @@
 import { APIResponse } from '@common/types';
+import { Roles, UserRoleEnum } from '@modules/auth/common';
 import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
-import { IAuthService } from '@modules/auth/services';
 import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
-import { TokenDto } from '@modules/auth/types/token.type';
 import { CreateLibraryApiResponse } from '@modules/library/controllers/api.response.types/library.api.response';
-import { UserDomainModel } from '@modules/user/domain.types/user';
+import { CreateLibraryDomainModel } from '@modules/library/domain.types/library';
+import { CreateLibraryDTO } from '@modules/library/dto';
+import { ILibraryService } from '@modules/library/services';
 import {
   Body,
   Controller,
@@ -12,6 +13,7 @@ import {
   HttpStatus,
   Inject,
   Post,
+  Request,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -21,21 +23,27 @@ import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 @Controller('library')
 export class LibraryController {
   constructor(
-    @Inject(IAuthService)
-    private readonly authService: IAuthService,
+    @Inject(ILibraryService)
+    private readonly _libraryService: ILibraryService,
   ) {}
 
   @ApiBody({ type: SignupDto })
   @ApiResponse({ status: HttpStatus.CREATED, type: CreateLibraryApiResponse })
   @HttpCode(HttpStatus.CREATED)
+  @Roles(UserRoleEnum.USER, UserRoleEnum.ADMIN)
   @Post('')
-  async craeteLibrary(@Body() signupDto: SignupDto): Promise<APIResponse> {
-    const data: { user: UserDomainModel; token: TokenDto } =
-      await this.authService.signup(signupDto);
+  async craeteLibrary(
+    @Request() req,
+    @Body() createLibraryDto: CreateLibraryDTO,
+  ): Promise<APIResponse> {
+    const user = req.user as JwtUserData;
+    const createLibraryDomainModel: CreateLibraryDomainModel = {
+      name: createLibraryDto.name,
+      userId: user.id,
+    };
 
     const responseEntity: CreateLibraryApiResponse = {
-      user: data.user as JwtUserData,
-      token: data.token,
+      data: await this._libraryService.createLibrary(createLibraryDomainModel),
     };
 
     const apiResponse: APIResponse = {

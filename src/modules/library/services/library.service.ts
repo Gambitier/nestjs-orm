@@ -1,12 +1,10 @@
-import { IEmailService } from '@modules/communication/services';
 import {
   CreateLibraryDomainModel,
   LibraryDomainModel,
 } from '@modules/library/domain.types/library';
+import { ILibraryRepository } from '@modules/library/repositories/library.repo.interface';
 import { ILibraryService } from '@modules/library/services/library.service.interface';
-import { IUserService } from '@modules/user/services/user.service.interface';
 import { Inject, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 
 /////////////////////////////////////////////////////
 
@@ -16,18 +14,13 @@ export class LibraryService implements ILibraryService {
    *
    */
   constructor(
-    private jwtService: JwtService,
-
-    @Inject(IUserService)
-    private readonly userService: IUserService,
-
-    @Inject(IEmailService)
-    private readonly emailService: IEmailService,
+    @Inject(ILibraryRepository)
+    private readonly _libraryRepository: ILibraryRepository,
   ) {
     //
   }
 
   createLibrary(model: CreateLibraryDomainModel): Promise<LibraryDomainModel> {
-    throw new Error('Method not implemented.');
+    return this._libraryRepository.createLibrary(model);
   }
 }

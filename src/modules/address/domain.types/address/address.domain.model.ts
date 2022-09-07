@@ -10,6 +10,6 @@ export type AddressDomainModel = {
   deleted: Date;
 };
 
-export type CreateLibraryDomainModel = {
+export type CreateAddressDomainModel = {
   todo: any;
 };

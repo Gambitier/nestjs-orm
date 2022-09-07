@@ -5,7 +5,7 @@ import {
 } from '@modules/library/domain.types/library';
 import { ILibraryRepository } from '@modules/library/repositories/library.repo.interface';
 import { Inject, Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Library, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 
 /////////////////////////////////////////////////////
@@ -28,7 +28,30 @@ export class LibraryRepository implements ILibraryRepository {
     this._libraryEntity = prismaService.library;
   }
 
-  createLibrary(model: CreateLibraryDomainModel): Promise<LibraryDomainModel> {
-    throw new Error('Method not implemented.');
+  async createLibrary(
+    model: CreateLibraryDomainModel,
+  ): Promise<LibraryDomainModel> {
+    const createInputs: Prisma.LibraryCreateInput = {
+      name: model.name,
+      libraryUserAccounts: {
+        create: {
+          role: 'OWNER',
+          user: {
+            connect: {
+              id: model.userId,
+            },
+          },
+        },
+      },
+    };
+
+    const entity: Library = await this._libraryEntity.create({
+      data: createInputs,
+      include: {
+        libraryUserAccounts: true,
+      },
+    });
+
+    return entity as LibraryDomainModel;
   }
 }

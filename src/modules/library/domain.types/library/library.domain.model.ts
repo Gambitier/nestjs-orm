@@ -1,5 +1,4 @@
 import { AddressDomainModel } from '@modules/address/domain.types/address';
-import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
 import { BookDomainModel } from '@modules/book/domain.types/book';
 import { LibraryUserAccountDomainModel } from '@modules/library/domain.types/library.user.account';
 
@@ -17,5 +16,5 @@ export type LibraryDomainModel = {
 
 export type CreateLibraryDomainModel = {
   name: string;
-  user: JwtUserData;
+  userId: string;
 };
