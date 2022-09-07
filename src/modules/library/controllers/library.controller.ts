@@ -47,7 +47,7 @@ export class LibraryController {
     };
 
     const apiResponse: APIResponse = {
-      message: 'User logged in successfully!',
+      message: 'Created new library successfully!',
       data: {
         entity: new CreateLibraryApiResponse(responseEntity),
       },
