@@ -1,4 +1,7 @@
+import { AddressDomainModel } from '@modules/address/domain.types/address';
 import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
+import { BookDomainModel } from '@modules/book/domain.types/book';
+import { LibraryUserAccountDomainModel } from '@modules/library/domain.types/library.user.account';
 
 export type LibraryDomainModel = {
   id: string;
@@ -7,9 +10,9 @@ export type LibraryDomainModel = {
   deleted: Date | null;
   name: string;
 
-  addresses?: any;
-  books?: any;
-  libraryUserAccounts?: any;
+  addresses?: AddressDomainModel[];
+  books?: BookDomainModel[];
+  libraryUserAccounts?: LibraryUserAccountDomainModel[];
 };
 
 export type CreateLibraryDomainModel = {
