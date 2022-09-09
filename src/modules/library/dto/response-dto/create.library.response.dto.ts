@@ -27,7 +27,7 @@ export class CreateLibraryResponseDto {
   @Expose()
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: LibraryUserAccountDto })
   @Expose()
   @Type(() => LibraryUserAccountDto)
   libraryUserAccounts: LibraryUserAccountDto[];

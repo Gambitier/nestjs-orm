@@ -29,7 +29,6 @@ export class LibraryController {
     private readonly _libraryService: ILibraryService,
   ) {}
 
-  @ApiBody({ type: SignupDto })
   @ApiResponse({ status: HttpStatus.CREATED, type: CreateLibraryResponseDto })
   @HttpCode(HttpStatus.CREATED)
   @Roles(UserRoleEnum.USER, UserRoleEnum.ADMIN)
