@@ -6,9 +6,14 @@ import { UserModule } from '@modules/user/user.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggerModule } from 'nestjs-pino';
 // import { LoggerModule } from 'nestjs-pino';
 import { TwilioModule } from 'nestjs-twilio';
-import { mailerModuleConfigs, twilioModuleConfig } from 'src/configs';
+import {
+  logggerModuleConfig,
+  mailerModuleConfigs,
+  twilioModuleConfig,
+} from 'src/configs';
 import { AllExceptionsFilter } from 'src/filters/all-exceptions.filter';
 import { APIResponseInterceptor } from 'src/interceptors/api.response.interceptor';
 import { PrismaService } from 'src/prisma.service';
@@ -26,7 +31,7 @@ import { PublisherModule } from './modules/publisher/publisher.module';
     BookModule,
     LibraryModule,
     // LoggerModule.forRoot(),
-    // LoggerModule.forRootAsync(logggerModuleConfig),
+    LoggerModule.forRootAsync(logggerModuleConfig),
     TwilioModule.forRootAsync(twilioModuleConfig),
     MailerModule.forRootAsync(mailerModuleConfigs),
     UserModule,

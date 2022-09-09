@@ -12,7 +12,26 @@ export const logggerModuleConfig = {
   },
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const autologgingConfig = {
+  ignore: (req) => {
+    const baseApiUrl = '/api/v1';
+    const apiEndpointList = [
+      'notification',
+      // 'auth/signup',
+      // 'auth/login',
+    ];
+    const shouldIgnore = apiEndpointList.some(
+      (api) =>
+        req.url.startsWith(`${baseApiUrl}/${api}`) ||
+        req.url === `${baseApiUrl}` ||
+        req.url === `${baseApiUrl}/` ||
+        req.url.includes('favicon.ico'),
+    );
+
+    return shouldIgnore;
+  },
+};
+
 function getPinoHttpConfig(NODE_ENV: string) {
   return {
     level: NODE_ENV !== 'production' ? 'debug' : 'info',
@@ -45,24 +64,7 @@ function getPinoHttpConfig(NODE_ENV: string) {
         return req;
       },
     },
-    autoLogging: {
-      ignore: (req) => {
-        const baseApiUrl = '/api/v1';
-        const apiEndpointList = [
-          'notification',
-          // 'auth/signup',
-          // 'auth/login',
-        ];
-        const shouldIgnore = apiEndpointList.some(
-          (api) =>
-            req.url.startsWith(`${baseApiUrl}/${api}`) ||
-            req.url === `${baseApiUrl}` ||
-            req.url === `${baseApiUrl}/` ||
-            req.url.includes('favicon.ico'),
-        );
-
-        return shouldIgnore;
-      },
-    },
+    autoLogging:
+      NODE_ENV == 'LOCAL' || NODE_ENV == 'DEV' ? false : autologgingConfig,
   };
 }

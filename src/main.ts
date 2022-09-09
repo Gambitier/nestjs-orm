@@ -15,7 +15,7 @@ async function bootstrap() {
     abortOnError: false,
   });
 
-  // app.useLogger(app.get(Logger));
+  app.useLogger(app.get(Logger));
 
   app.useGlobalPipes(
     new ValidationPipe({
