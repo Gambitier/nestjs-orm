@@ -5,9 +5,8 @@ import { DatabaseErrorHandlerModule } from '@modules/database-error-handler/data
 import { UserModule } from '@modules/user/user.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { LoggerModule } from 'nestjs-pino';
+// import { LoggerModule } from 'nestjs-pino';
 import { TwilioModule } from 'nestjs-twilio';
 import { mailerModuleConfigs, twilioModuleConfig } from 'src/configs';
 import { AllExceptionsFilter } from 'src/filters/all-exceptions.filter';
@@ -27,67 +26,7 @@ import { PublisherModule } from './modules/publisher/publisher.module';
     BookModule,
     LibraryModule,
     // LoggerModule.forRoot(),
-    LoggerModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
-        const NODE_ENV = configService.get<string>('NODE_ENV');
-        const shouldUsePrettyPrint = NODE_ENV === 'local';
-        return {
-          pinoHttp: {
-            level: NODE_ENV !== 'production' ? 'debug' : 'info',
-            redact: [
-              'req.headers',
-              'req.remoteAddress',
-              'req.remotePort',
-              'res.headers',
-            ],
-            transport:
-              NODE_ENV !== 'production'
-                ? {
-                    target: 'pino-pretty',
-                    options: {
-                      ignore: 'req.headers,res',
-                      colorize: true,
-                      levelFirst: true,
-                    },
-                  }
-                : undefined,
-            customSuccessMessage(req) {
-              return `request completed | RquestId: ${req.id} | API: ${req.method}: ${req.url}`;
-            },
-            customErrorMessage(req) {
-              return `request errored | RquestId: ${req.id} | API: ${req.method}: ${req.url}`;
-            },
-            serializers: {
-              req(req) {
-                req.body = req.raw.body;
-                return req;
-              },
-            },
-            autoLogging: {
-              ignore: (req) => {
-                const baseApiUrl = '/api/v1';
-                const apiEndpointList = [
-                  'notification',
-                  // 'auth/signup',
-                  // 'auth/login',
-                ];
-                const shouldIgnore = apiEndpointList.some(
-                  (api) =>
-                    req.url.startsWith(`${baseApiUrl}/${api}`) ||
-                    req.url === `${baseApiUrl}` ||
-                    req.url === `${baseApiUrl}/` ||
-                    req.url.includes('favicon.ico'),
-                );
-
-                return shouldIgnore;
-              },
-            },
-          },
-        };
-      },
-    }),
+    // LoggerModule.forRootAsync(logggerModuleConfig),
     TwilioModule.forRootAsync(twilioModuleConfig),
     MailerModule.forRootAsync(mailerModuleConfigs),
     UserModule,

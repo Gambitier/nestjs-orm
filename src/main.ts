@@ -8,13 +8,14 @@ import { PrismaService } from 'src/prisma.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn'],
     // the bufferLogs field, it will force NestJS to wait for logger
     // to be ready instead of using built -in logger on start
     bufferLogs: true,
     abortOnError: false,
   });
 
-  app.useLogger(app.get(Logger));
+  // app.useLogger(app.get(Logger));
 
   app.useGlobalPipes(
     new ValidationPipe({
