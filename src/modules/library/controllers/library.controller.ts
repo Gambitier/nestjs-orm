@@ -10,6 +10,7 @@ import { ILibraryService } from '@modules/library/services';
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Inject,
@@ -33,6 +34,35 @@ export class LibraryController {
   @Roles(UserRoleEnum.USER, UserRoleEnum.ADMIN)
   @Post('')
   async craeteLibrary(
+    @Request() req,
+    @Body() createLibraryDto: CreateLibraryDTO,
+  ): Promise<APIResponse> {
+    const user = req.user as JwtUserData;
+    const createLibraryDomainModel: CreateLibraryDomainModel = {
+      name: createLibraryDto.name,
+      userId: user.id,
+    };
+
+    const responseEntity: CreateLibraryResponseDto =
+      (await this._libraryService.createLibrary(
+        createLibraryDomainModel,
+      )) as CreateLibraryResponseDto;
+
+    const apiResponse: APIResponse = {
+      message: 'Created new library successfully!',
+      data: {
+        entity: new CreateLibraryResponseDto(responseEntity),
+      },
+    };
+
+    return apiResponse;
+  }
+
+  @ApiResponse({ status: HttpStatus.OK, type: CreateLibraryResponseDto })
+  @HttpCode(HttpStatus.OK)
+  @Roles(UserRoleEnum.USER, UserRoleEnum.ADMIN)
+  @Get('')
+  async getAllLibrary(
     @Request() req,
     @Body() createLibraryDto: CreateLibraryDTO,
   ): Promise<APIResponse> {
