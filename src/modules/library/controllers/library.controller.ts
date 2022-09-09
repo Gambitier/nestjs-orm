@@ -2,9 +2,11 @@ import { APIResponse } from '@common/types';
 import { Roles, UserRoleEnum } from '@modules/auth/common';
 import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
 import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
-import { CreateLibraryApiResponse } from '@modules/library/controllers/api.response.types/library.api.response';
 import { CreateLibraryDomainModel } from '@modules/library/domain.types/library';
-import { CreateLibraryDTO } from '@modules/library/dto';
+import {
+  CreateLibraryDTO,
+  CreateLibraryResponseDto,
+} from '@modules/library/dto';
 import { ILibraryService } from '@modules/library/services';
 import {
   Body,
@@ -28,7 +30,7 @@ export class LibraryController {
   ) {}
 
   @ApiBody({ type: SignupDto })
-  @ApiResponse({ status: HttpStatus.CREATED, type: CreateLibraryApiResponse })
+  @ApiResponse({ status: HttpStatus.CREATED, type: CreateLibraryResponseDto })
   @HttpCode(HttpStatus.CREATED)
   @Roles(UserRoleEnum.USER, UserRoleEnum.ADMIN)
   @Post('')
@@ -42,14 +44,15 @@ export class LibraryController {
       userId: user.id,
     };
 
-    const responseEntity: CreateLibraryApiResponse = {
-      data: await this._libraryService.createLibrary(createLibraryDomainModel),
-    };
+    const responseEntity: CreateLibraryResponseDto =
+      (await this._libraryService.createLibrary(
+        createLibraryDomainModel,
+      )) as CreateLibraryResponseDto;
 
     const apiResponse: APIResponse = {
       message: 'Created new library successfully!',
       data: {
-        entity: new CreateLibraryApiResponse(responseEntity),
+        entity: new CreateLibraryResponseDto(responseEntity),
       },
     };
 
