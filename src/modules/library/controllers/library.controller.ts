@@ -1,11 +1,16 @@
 import { APIResponse } from '@common/types';
-import { Roles, UserRoleEnum } from '@modules/auth/common';
+import { AllowAnonymous, Roles, UserRoleEnum } from '@modules/auth/common';
 import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
-import { CreateLibraryDomainModel } from '@modules/library/domain.types/library';
+import {
+  CreateLibraryDomainModel,
+  LibraryDomainModel,
+} from '@modules/library/domain.types/library';
 import {
   CreateLibraryDTO,
   CreateLibraryResponseDto,
+  LibrarySearchDTO,
 } from '@modules/library/dto';
+import { LibraryResponseDto } from '@modules/library/dto/response-dto/library.response.dto';
 import { ILibraryService } from '@modules/library/services';
 import {
   Body,
@@ -15,6 +20,7 @@ import {
   HttpStatus,
   Inject,
   Post,
+  Query,
   Request,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -58,29 +64,21 @@ export class LibraryController {
     return apiResponse;
   }
 
-  @ApiResponse({ status: HttpStatus.OK, type: CreateLibraryResponseDto })
+  @ApiResponse({ status: HttpStatus.OK, type: [LibraryResponseDto] })
   @HttpCode(HttpStatus.OK)
-  @Roles(UserRoleEnum.USER, UserRoleEnum.ADMIN)
-  @Get('')
-  async getAllLibrary(
+  @AllowAnonymous()
+  @Get('search')
+  async searchLibrary(
     @Request() req,
-    @Body() createLibraryDto: CreateLibraryDTO,
+    @Query() searchDTO: LibrarySearchDTO,
   ): Promise<APIResponse> {
-    const user = req.user as JwtUserData;
-    const createLibraryDomainModel: CreateLibraryDomainModel = {
-      name: createLibraryDto.name,
-      userId: user.id,
-    };
-
-    const responseEntity: CreateLibraryResponseDto =
-      (await this._libraryService.createLibrary(
-        createLibraryDomainModel,
-      )) as CreateLibraryResponseDto;
+    const libraaries: LibraryDomainModel[] =
+      await this._libraryService.searchLibrary(searchDTO);
 
     const apiResponse: APIResponse = {
-      message: 'Created new library successfully!',
+      message: 'Fetched list successfully!',
       data: {
-        entity: new CreateLibraryResponseDto(responseEntity),
+        entity: libraaries.map((item) => new LibraryResponseDto(item)),
       },
     };
 
