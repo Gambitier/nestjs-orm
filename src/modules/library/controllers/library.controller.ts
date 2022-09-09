@@ -1,6 +1,5 @@
 import { APIResponse } from '@common/types';
 import { Roles, UserRoleEnum } from '@modules/auth/common';
-import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
 import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
 import { CreateLibraryDomainModel } from '@modules/library/domain.types/library';
 import {
@@ -17,7 +16,7 @@ import {
   Post,
   Request,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 /////////////////////////////////////////////////////////////////////////
 @ApiBearerAuth()

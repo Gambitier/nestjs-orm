@@ -1,3 +1,4 @@
+import { LibraryUserAccountRoleEnum } from '@modules/library/domain.types/library.user.account';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 
@@ -20,15 +21,11 @@ export class LibraryUserAccountDto {
 
   @ApiProperty()
   @Expose()
-  deleted: Date;
-
-  @ApiProperty()
-  @Expose()
   userId: string;
 
   @ApiProperty()
   @Exclude()
-  role: string;
+  role: LibraryUserAccountRoleEnum;
 
   @ApiProperty()
   @Expose()

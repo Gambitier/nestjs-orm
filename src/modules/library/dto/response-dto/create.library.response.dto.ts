@@ -21,10 +21,6 @@ export class CreateLibraryResponseDto {
 
   @ApiProperty()
   @Expose()
-  deleted: Date;
-
-  @ApiProperty()
-  @Expose()
   name: string;
 
   @ApiProperty({ type: LibraryUserAccountDto })
