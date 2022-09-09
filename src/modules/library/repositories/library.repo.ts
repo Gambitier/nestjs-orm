@@ -78,6 +78,15 @@ export class LibraryRepository implements ILibraryRepository {
   ): Promise<LibraryDomainModel> {
     const createInputs: Prisma.LibraryCreateInput = {
       name: model.name,
+      addresses: {
+        create: {
+          streetAddress: model.address.streetAddress,
+          city: model.address.city,
+          state: model.address.state,
+          zipCode: model.address.zipCode,
+          country: model.address.country,
+        },
+      },
       libraryUserAccounts: {
         create: {
           role: LibraryUserAccountRoleEnum.OWNER,

@@ -47,6 +47,7 @@ export class LibraryController {
     const createLibraryDomainModel: CreateLibraryDomainModel = {
       name: createLibraryDto.name,
       userId: user.id,
+      address: createLibraryDto.address,
     };
 
     const responseEntity: CreateLibraryResponseDto =

@@ -11,5 +11,9 @@ export type AddressDomainModel = {
 };
 
 export type CreateAddressDomainModel = {
-  todo: any;
+  streetAddress?: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
 };
