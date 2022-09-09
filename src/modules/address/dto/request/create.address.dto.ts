@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateAddressDto {
   constructor(props: CreateAddressDto) {
@@ -7,22 +7,28 @@ export class CreateAddressDto {
   }
 
   @ApiProperty()
-  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
   streetAddress?: string;
 
   @ApiProperty()
-  @Expose()
+  @IsString()
+  @IsNotEmpty()
   city: string;
 
   @ApiProperty()
-  @Expose()
+  @IsString()
+  @IsNotEmpty()
   state: string;
 
   @ApiProperty()
-  @Expose()
+  @IsString()
+  @IsNotEmpty()
   zipCode: string;
 
   @ApiProperty()
-  @Expose()
+  @IsString()
+  @IsNotEmpty()
   country: string;
 }
