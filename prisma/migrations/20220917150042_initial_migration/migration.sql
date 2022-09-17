@@ -1,14 +1,14 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('SUPERADMIN', 'ADMIN', 'USER');
+CREATE TYPE "UserRoleEnum" AS ENUM ('SUPERADMIN', 'ADMIN', 'USER');
 
 -- CreateEnum
-CREATE TYPE "LibraryUserAccountRole" AS ENUM ('LIBRARIAN', 'MEMBER');
+CREATE TYPE "LibraryUserAccountRoleEnum" AS ENUM ('OWNER', 'LIBRARIAN', 'MEMBER');
 
 -- CreateEnum
-CREATE TYPE "Gender" AS ENUM ('MALE', 'FEMALE', 'OTHER', 'UNSPECIFIED');
+CREATE TYPE "GenderEnum" AS ENUM ('MALE', 'FEMALE', 'OTHER', 'UNSPECIFIED');
 
 -- CreateEnum
-CREATE TYPE "BookType" AS ENUM ('HARDCOVER', 'PAPERBACK', 'AUDIO_BOOK', 'EBOOK', 'NEWSPAPER', 'MAGAZINE', 'JOURNAL');
+CREATE TYPE "BookTypeEnum" AS ENUM ('HARDCOVER', 'PAPERBACK', 'AUDIO_BOOK', 'EBOOK', 'NEWSPAPER', 'MAGAZINE', 'JOURNAL');
 
 -- CreateTable
 CREATE TABLE "Library" (
@@ -28,7 +28,7 @@ CREATE TABLE "LibraryUserAccount" (
     "updatedAt" TIMESTAMPTZ(6) NOT NULL,
     "deleted" TIMESTAMPTZ(6),
     "userId" UUID NOT NULL,
-    "role" "LibraryUserAccountRole" NOT NULL DEFAULT 'MEMBER',
+    "role" "LibraryUserAccountRoleEnum" NOT NULL DEFAULT 'MEMBER',
     "libraryId" UUID NOT NULL,
 
     CONSTRAINT "LibraryUserAccount_pkey" PRIMARY KEY ("id")
@@ -44,7 +44,7 @@ CREATE TABLE "User" (
     "email" VARCHAR(100) NOT NULL,
     "phone" VARCHAR(15) NOT NULL,
     "password" VARCHAR(256) NOT NULL,
-    "gender" "Gender" NOT NULL DEFAULT 'UNSPECIFIED',
+    "gender" "GenderEnum" NOT NULL DEFAULT 'UNSPECIFIED',
     "dateOfBirth" DATE,
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(6) NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "UserRole" (
     "id" UUID NOT NULL,
-    "role" "Role" NOT NULL,
+    "role" "UserRoleEnum" NOT NULL DEFAULT 'USER',
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(6) NOT NULL,
     "deleted" TIMESTAMPTZ(6),
@@ -76,9 +76,6 @@ CREATE TABLE "Address" (
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(6) NOT NULL,
     "deleted" TIMESTAMPTZ(6),
-    "userId" UUID,
-    "libraryId" UUID,
-    "publisherId" UUID,
 
     CONSTRAINT "Address_pkey" PRIMARY KEY ("id")
 );
@@ -97,24 +94,13 @@ CREATE TABLE "LibraryBook" (
 );
 
 -- CreateTable
-CREATE TABLE "LibraryBookItem" (
-    "id" UUID NOT NULL,
-    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMPTZ(6) NOT NULL,
-    "deleted" TIMESTAMPTZ(6),
-    "bookId" UUID NOT NULL,
-
-    CONSTRAINT "LibraryBookItem_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Book" (
     "id" UUID NOT NULL,
     "isbn" VARCHAR(50) NOT NULL,
     "title" VARCHAR(50) NOT NULL,
     "language" VARCHAR(50) NOT NULL,
     "numberOfPages" INTEGER NOT NULL,
-    "bookType" "BookType" NOT NULL,
+    "bookType" "BookTypeEnum" NOT NULL,
     "publishedOn" DATE NOT NULL,
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(6) NOT NULL,
@@ -145,7 +131,7 @@ CREATE TABLE "Author" (
     "lastName" VARCHAR(50) NOT NULL,
     "email" VARCHAR(100) NOT NULL,
     "phone" VARCHAR(15) NOT NULL,
-    "gender" "Gender" NOT NULL DEFAULT 'UNSPECIFIED',
+    "gender" "GenderEnum" NOT NULL DEFAULT 'UNSPECIFIED',
     "dateOfBirth" DATE,
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(6) NOT NULL,
@@ -163,7 +149,7 @@ CREATE TABLE "BookBorrowLog" (
     "dueDate" DATE NOT NULL,
     "returnDate" DATE NOT NULL,
     "borrowedById" UUID NOT NULL,
-    "bookCopyId" UUID NOT NULL,
+    "libraryBookId" UUID,
 
     CONSTRAINT "BookBorrowLog_pkey" PRIMARY KEY ("id")
 );
@@ -178,6 +164,24 @@ CREATE TABLE "BookFineTransaction" (
     "bookBorrowLogId" UUID NOT NULL,
 
     CONSTRAINT "BookFineTransaction_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "_AddressToUser" (
+    "A" UUID NOT NULL,
+    "B" UUID NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_AddressToLibrary" (
+    "A" UUID NOT NULL,
+    "B" UUID NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_AddressToPublisher" (
+    "A" UUID NOT NULL,
+    "B" UUID NOT NULL
 );
 
 -- CreateTable
@@ -208,6 +212,24 @@ CREATE UNIQUE INDEX "Author_phone_key" ON "Author"("phone");
 CREATE UNIQUE INDEX "BookFineTransaction_bookBorrowLogId_key" ON "BookFineTransaction"("bookBorrowLogId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "_AddressToUser_AB_unique" ON "_AddressToUser"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_AddressToUser_B_index" ON "_AddressToUser"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_AddressToLibrary_AB_unique" ON "_AddressToLibrary"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_AddressToLibrary_B_index" ON "_AddressToLibrary"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_AddressToPublisher_AB_unique" ON "_AddressToPublisher"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_AddressToPublisher_B_index" ON "_AddressToPublisher"("B");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "_BookToPublisher_AB_unique" ON "_BookToPublisher"("A", "B");
 
 -- CreateIndex
@@ -229,15 +251,6 @@ ALTER TABLE "LibraryUserAccount" ADD CONSTRAINT "LibraryUserAccount_libraryId_fk
 ALTER TABLE "UserRole" ADD CONSTRAINT "UserRole_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Address" ADD CONSTRAINT "Address_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Address" ADD CONSTRAINT "Address_libraryId_fkey" FOREIGN KEY ("libraryId") REFERENCES "Library"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Address" ADD CONSTRAINT "Address_publisherId_fkey" FOREIGN KEY ("publisherId") REFERENCES "Publisher"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "LibraryBook" ADD CONSTRAINT "LibraryBook_bookId_fkey" FOREIGN KEY ("bookId") REFERENCES "Book"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -247,19 +260,34 @@ ALTER TABLE "LibraryBook" ADD CONSTRAINT "LibraryBook_libraryId_fkey" FOREIGN KE
 ALTER TABLE "LibraryBook" ADD CONSTRAINT "LibraryBook_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "LibraryUserAccount"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "LibraryBookItem" ADD CONSTRAINT "LibraryBookItem_bookId_fkey" FOREIGN KEY ("bookId") REFERENCES "LibraryBook"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Book" ADD CONSTRAINT "Book_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "LibraryUserAccount"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "BookBorrowLog" ADD CONSTRAINT "BookBorrowLog_borrowedById_fkey" FOREIGN KEY ("borrowedById") REFERENCES "LibraryUserAccount"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BookBorrowLog" ADD CONSTRAINT "BookBorrowLog_bookCopyId_fkey" FOREIGN KEY ("bookCopyId") REFERENCES "LibraryBookItem"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "BookBorrowLog" ADD CONSTRAINT "BookBorrowLog_libraryBookId_fkey" FOREIGN KEY ("libraryBookId") REFERENCES "LibraryBook"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "BookFineTransaction" ADD CONSTRAINT "BookFineTransaction_bookBorrowLogId_fkey" FOREIGN KEY ("bookBorrowLogId") REFERENCES "BookBorrowLog"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_AddressToUser" ADD CONSTRAINT "_AddressToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Address"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_AddressToUser" ADD CONSTRAINT "_AddressToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_AddressToLibrary" ADD CONSTRAINT "_AddressToLibrary_A_fkey" FOREIGN KEY ("A") REFERENCES "Address"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_AddressToLibrary" ADD CONSTRAINT "_AddressToLibrary_B_fkey" FOREIGN KEY ("B") REFERENCES "Library"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_AddressToPublisher" ADD CONSTRAINT "_AddressToPublisher_A_fkey" FOREIGN KEY ("A") REFERENCES "Address"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_AddressToPublisher" ADD CONSTRAINT "_AddressToPublisher_B_fkey" FOREIGN KEY ("B") REFERENCES "Publisher"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_BookToPublisher" ADD CONSTRAINT "_BookToPublisher_A_fkey" FOREIGN KEY ("A") REFERENCES "Book"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -10,26 +10,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
+enum UserRoleEnum {
   SUPERADMIN
   ADMIN
   USER
 }
 
-enum LibraryUserAccountRole {
+enum LibraryUserAccountRoleEnum {
   OWNER
   LIBRARIAN
   MEMBER
 }
 
-enum Gender {
+enum GenderEnum {
   MALE
   FEMALE
   OTHER
   UNSPECIFIED
 }
 
-enum BookType {
+enum BookTypeEnum {
   HARDCOVER
   PAPERBACK
   AUDIO_BOOK
@@ -40,134 +40,105 @@ enum BookType {
 }
 
 model Library {
-  id        String    @id @default(uuid()) @db.Uuid
-  createdAt DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime  @updatedAt @db.Timestamptz(6)
-  deleted   DateTime? @db.Timestamptz(6)
-  name      String    @db.VarChar(50)
-
+  id                  String               @id @default(uuid()) @db.Uuid
+  createdAt           DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime             @updatedAt @db.Timestamptz(6)
+  deleted             DateTime?            @db.Timestamptz(6)
+  name                String               @db.VarChar(50)
   addresses           Address[]
   books               LibraryBook[]
   libraryUserAccounts LibraryUserAccount[]
 }
 
 model LibraryUserAccount {
-  id        String    @id @default(uuid()) @db.Uuid
-  createdAt DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime  @updatedAt @db.Timestamptz(6)
-  deleted   DateTime? @db.Timestamptz(6)
-
-  user   User                   @relation(fields: [userId], references: [id])
-  userId String                 @db.Uuid
-  role   LibraryUserAccountRole @default(MEMBER)
-
-  library   Library @relation(fields: [libraryId], references: [id])
-  libraryId String  @db.Uuid
-
+  id                  String                     @id @default(uuid()) @db.Uuid
+  createdAt           DateTime                   @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime                   @updatedAt @db.Timestamptz(6)
+  deleted             DateTime?                  @db.Timestamptz(6)
+  user                User                       @relation(fields: [userId], references: [id])
+  userId              String                     @db.Uuid
+  role                LibraryUserAccountRoleEnum @default(MEMBER)
+  library             Library                    @relation(fields: [libraryId], references: [id])
+  libraryId           String                     @db.Uuid
   booksAddedToLibrary LibraryBook[]
   booksBorrowed       BookBorrowLog[]
   booksCreated        Book[]
 }
 
 model User {
-  id          String    @id @default(uuid()) @db.Uuid
-  prefix      String    @db.VarChar(10)
-  firstName   String    @db.VarChar(50)
-  middleName  String?   @db.VarChar(50)
-  lastName    String    @db.VarChar(50)
-  email       String    @unique @db.VarChar(100)
-  phone       String    @unique @db.VarChar(15)
-  password    String    @db.VarChar(256)
-  gender      Gender    @default(UNSPECIFIED)
-  dateOfBirth DateTime? @db.Date
-  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
-  deleted     DateTime? @db.Timestamptz(6)
-
+  id              String               @id @default(uuid()) @db.Uuid
+  prefix          String               @db.VarChar(10)
+  firstName       String               @db.VarChar(50)
+  middleName      String?              @db.VarChar(50)
+  lastName        String               @db.VarChar(50)
+  email           String               @unique @db.VarChar(100)
+  phone           String               @unique @db.VarChar(15)
+  password        String               @db.VarChar(256)
+  gender          GenderEnum           @default(UNSPECIFIED)
+  dateOfBirth     DateTime?            @db.Date
+  createdAt       DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime             @updatedAt @db.Timestamptz(6)
+  deleted         DateTime?            @db.Timestamptz(6)
   userRoles       UserRole[]
   addresses       Address[]
   libraryAccounts LibraryUserAccount[]
 }
 
 model UserRole {
-  id        String    @id @default(uuid()) @db.Uuid
-  role      Role
-  createdAt DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime  @updatedAt @db.Timestamptz(6)
-  deleted   DateTime? @db.Timestamptz(6)
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @db.Uuid
+  id        String       @id @default(uuid()) @db.Uuid
+  role      UserRoleEnum @default(USER)
+  createdAt DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime     @updatedAt @db.Timestamptz(6)
+  deleted   DateTime?    @db.Timestamptz(6)
+  user      User         @relation(fields: [userId], references: [id])
+  userId    String       @db.Uuid
 }
 
 model Address {
-  id            String    @id @default(uuid()) @db.Uuid
-  streetAddress String    @db.VarChar(500)
-  city          String    @db.VarChar(50)
-  state         String    @db.VarChar(50)
-  zipCode       String    @db.VarChar(10)
-  country       String    @db.VarChar(50)
-  createdAt     DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt     DateTime  @updatedAt @db.Timestamptz(6)
-  deleted       DateTime? @db.Timestamptz(6)
-
-  user        User?      @relation(fields: [userId], references: [id])
-  userId      String?    @db.Uuid
-  library     Library?   @relation(fields: [libraryId], references: [id])
-  libraryId   String?    @db.Uuid
-  publisher   Publisher? @relation(fields: [publisherId], references: [id])
-  publisherId String?    @db.Uuid
+  id            String      @id @default(uuid()) @db.Uuid
+  streetAddress String      @db.VarChar(500)
+  city          String      @db.VarChar(50)
+  state         String      @db.VarChar(50)
+  zipCode       String      @db.VarChar(10)
+  country       String      @db.VarChar(50)
+  createdAt     DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime    @updatedAt @db.Timestamptz(6)
+  deleted       DateTime?   @db.Timestamptz(6)
+  users         User[]
+  libraries     Library[]
+  publishers    Publisher[]
 }
 
 model LibraryBook {
-  id        String    @id @default(uuid()) @db.Uuid
-  createdAt DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime  @updatedAt @db.Timestamptz(6)
-  deleted   DateTime? @db.Timestamptz(6)
-
-  bookInformation Book   @relation(fields: [bookId], references: [id])
-  bookId          String @db.Uuid
-
-  copies LibraryBookItem[]
-
-  library   Library @relation(fields: [libraryId], references: [id])
-  libraryId String  @db.Uuid
-
-  createdBy   LibraryUserAccount @relation(fields: [createdById], references: [id])
-  createdById String             @db.Uuid
-}
-
-model LibraryBookItem {
-  id        String    @id @default(uuid()) @db.Uuid
-  createdAt DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime  @updatedAt @db.Timestamptz(6)
-  deleted   DateTime? @db.Timestamptz(6)
-
-  book   LibraryBook @relation(fields: [bookId], references: [id])
-  bookId String      @db.Uuid
-
-  bookBorrowLogs BookBorrowLog[]
+  id              String             @id @default(uuid()) @db.Uuid
+  createdAt       DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime           @updatedAt @db.Timestamptz(6)
+  deleted         DateTime?          @db.Timestamptz(6)
+  bookInformation Book               @relation(fields: [bookId], references: [id])
+  bookId          String             @db.Uuid
+  library         Library            @relation(fields: [libraryId], references: [id])
+  libraryId       String             @db.Uuid
+  createdBy       LibraryUserAccount @relation(fields: [createdById], references: [id])
+  createdById     String             @db.Uuid
+  bookBorrowLogs  BookBorrowLog[]
 }
 
 model Book {
-  id            String    @id @default(uuid()) @db.Uuid
-  isbn          String    @db.VarChar(50)
-  title         String    @db.VarChar(50)
-  language      String    @db.VarChar(50)
-  numberOfPages Int       @db.Integer
-  bookType      BookType
-  publishedOn   DateTime  @db.Date
-  createdAt     DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt     DateTime  @updatedAt @db.Timestamptz(6)
-  deleted       DateTime? @db.Timestamptz(6)
-
-  authors    Author[]
-  publishers Publisher[]
-
-  createdBy   LibraryUserAccount @relation(fields: [createdById], references: [id])
-  createdById String             @db.Uuid
-
-  libraryBook LibraryBook[]
+  id            String             @id @default(uuid()) @db.Uuid
+  isbn          String             @db.VarChar(50)
+  title         String             @db.VarChar(50)
+  language      String             @db.VarChar(50)
+  numberOfPages Int                @db.Integer
+  bookType      BookTypeEnum
+  publishedOn   DateTime           @db.Date
+  createdAt     DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime           @updatedAt @db.Timestamptz(6)
+  deleted       DateTime?          @db.Timestamptz(6)
+  createdBy     LibraryUserAccount @relation(fields: [createdById], references: [id])
+  createdById   String             @db.Uuid
+  publishers    Publisher[]
+  authors       Author[]
+  copies        LibraryBook[]
 }
 
 model Publisher {
@@ -175,55 +146,48 @@ model Publisher {
   createdAt DateTime  @default(now()) @db.Timestamptz(6)
   updatedAt DateTime  @updatedAt @db.Timestamptz(6)
   deleted   DateTime? @db.Timestamptz(6)
-
   name      String    @db.VarChar(400)
   website   String    @db.VarChar(400)
   addresses Address[]
-
-  books Book[]
+  books     Book[]
 }
 
 model Author {
-  id          String    @id @default(uuid()) @db.Uuid
-  prefix      String    @db.VarChar(20)
-  firstName   String    @db.VarChar(50)
-  middleName  String    @db.VarChar(50)
-  lastName    String    @db.VarChar(50)
-  email       String    @unique @db.VarChar(100)
-  phone       String    @unique @db.VarChar(15)
-  gender      Gender    @default(UNSPECIFIED)
-  dateOfBirth DateTime? @db.Date
-  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
-  deleted     DateTime? @db.Timestamptz(6)
-
-  books Book[]
+  id          String     @id @default(uuid()) @db.Uuid
+  prefix      String     @db.VarChar(20)
+  firstName   String     @db.VarChar(50)
+  middleName  String     @db.VarChar(50)
+  lastName    String     @db.VarChar(50)
+  email       String     @unique @db.VarChar(100)
+  phone       String     @unique @db.VarChar(15)
+  gender      GenderEnum @default(UNSPECIFIED)
+  dateOfBirth DateTime?  @db.Date
+  createdAt   DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime   @updatedAt @db.Timestamptz(6)
+  deleted     DateTime?  @db.Timestamptz(6)
+  books       Book[]
 }
 
 model BookBorrowLog {
-  id         String    @id @default(uuid()) @db.Uuid
-  createdAt  DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt  DateTime  @updatedAt @db.Timestamptz(6)
-  deleted    DateTime? @db.Timestamptz(6)
-  dueDate    DateTime  @db.Date
-  returnDate DateTime  @db.Date
-
-  borrowedBy   LibraryUserAccount @relation(fields: [borrowedById], references: [id])
-  borrowedById String             @db.Uuid
-
-  bookCopy   LibraryBookItem @relation(fields: [bookCopyId], references: [id])
-  bookCopyId String          @db.Uuid
-
+  id                  String               @id @default(uuid()) @db.Uuid
+  createdAt           DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime             @updatedAt @db.Timestamptz(6)
+  deleted             DateTime?            @db.Timestamptz(6)
+  dueDate             DateTime             @db.Date
+  returnDate          DateTime             @db.Date
+  borrowedBy          LibraryUserAccount   @relation(fields: [borrowedById], references: [id])
+  borrowedById        String               @db.Uuid
   bookFineTransaction BookFineTransaction?
+  book                LibraryBook?         @relation(fields: [libraryBookId], references: [id])
+  libraryBookId       String?              @db.Uuid
 }
 
 model BookFineTransaction {
-  id         String    @id @default(uuid()) @db.Uuid
-  createdAt  DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt  DateTime  @updatedAt @db.Timestamptz(6)
-  deleted    DateTime? @db.Timestamptz(6)
-  amountPaid Float     @db.Real
-
+  id              String        @id @default(uuid()) @db.Uuid
+  createdAt       DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime      @updatedAt @db.Timestamptz(6)
+  deleted         DateTime?     @db.Timestamptz(6)
+  amountPaid      Float         @db.Real
   bookBorrowLog   BookBorrowLog @relation(fields: [bookBorrowLogId], references: [id])
   bookBorrowLogId String        @unique @db.Uuid
 }
