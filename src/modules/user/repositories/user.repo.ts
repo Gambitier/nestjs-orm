@@ -6,6 +6,7 @@ import {
   UserDomainModel,
 } from '@modules/user/domain.types/user';
 import { GenderEnum } from '@modules/user/enums/gender.enum';
+import { UserPrefixEnum } from '@modules/user/enums/user.prefix.enum';
 import { IUserRepository } from '@modules/user/repositories/user.repo.interface';
 import { Inject, Injectable } from '@nestjs/common';
 import { Prisma, User, UserRole } from '@prisma/client';
@@ -133,6 +134,7 @@ export class UserRepository implements IUserRepository {
     const domainModel: UserDomainModel = {
       ...entity,
       gender: entity.gender as GenderEnum,
+      prefix: entity.prefix as UserPrefixEnum,
       userRoles: entity.userRoles.map((item) => {
         return {
           ...item,

@@ -1,5 +1,6 @@
 import { generatePassword, hashData } from '@common/utils';
 import { GenderEnum } from '@modules/user/enums/gender.enum';
+import { UserPrefixEnum } from '@modules/user/enums/user.prefix.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Transform, Type } from 'class-transformer';
 import {
@@ -17,9 +18,9 @@ export class SignupDto {
     Object.assign(this, props);
   }
 
-  @ApiProperty()
-  @IsString()
-  prefix: string;
+  @ApiProperty({ enum: UserPrefixEnum })
+  @IsEnum(UserPrefixEnum)
+  prefix: UserPrefixEnum;
 
   @ApiProperty()
   @IsString()
