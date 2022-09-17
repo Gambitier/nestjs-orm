@@ -1,11 +1,16 @@
 import { UserRoleDto } from '@modules/user/dto';
+import { UserPrefixEnum } from '@modules/user/enums/user.prefix.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 
-export class JwtUserData {
+export class JwtUserDataDto {
   @ApiProperty()
   @Expose()
   id: string;
+
+  @ApiProperty({ enum: UserPrefixEnum })
+  @Expose()
+  prefix: UserPrefixEnum;
 
   @ApiProperty()
   @Expose()

@@ -1,5 +1,5 @@
-import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
-import { TokenDto } from '@modules/auth/types/token.type';
+import { JwtUserDataDto } from '@modules/auth/dto/response-dto/jwt.user.data.dto';
+import { TokenDto } from '@modules/auth/dto/response-dto/token.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 
@@ -9,9 +9,9 @@ export class LoginApiResponse {
   }
 
   @ApiProperty()
-  @Type(() => JwtUserData)
+  @Type(() => JwtUserDataDto)
   @Expose()
-  user: JwtUserData;
+  user: JwtUserDataDto;
 
   @ApiProperty()
   @Type(() => TokenDto)

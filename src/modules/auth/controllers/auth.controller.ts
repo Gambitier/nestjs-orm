@@ -13,8 +13,7 @@ import {
 } from '@modules/auth/dto';
 import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
 import { IAuthService } from '@modules/auth/services';
-import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
-import { TokenDto } from '@modules/auth/types/token.type';
+import { JwtUserDataDto } from '@modules/auth/dto/response-dto/jwt.user.data.dto';
 import { UserDomainModel } from '@modules/user/domain.types/user';
 import {
   Body,
@@ -29,6 +28,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginApiResponse } from './api.response.types/auth.api.response';
+import { TokenDto } from '@modules/auth/dto/response-dto/token.dto';
 
 /////////////////////////////////////////////////////////////////////////
 
@@ -51,7 +51,7 @@ export class AuthController {
       await this.authService.signup(signupDto);
 
     const responseEntity: LoginApiResponse = {
-      user: data.user as JwtUserData,
+      user: data.user as JwtUserDataDto,
       token: data.token,
     };
 
@@ -73,7 +73,7 @@ export class AuthController {
   async logIn(@Request() req): Promise<APIResponse> {
     const tokenDto: TokenDto = await this.authService.login(req.user);
     const responseEntity: LoginApiResponse = {
-      user: req.user as JwtUserData,
+      user: req.user as JwtUserDataDto,
       token: tokenDto,
     };
 
@@ -138,7 +138,7 @@ export class AuthController {
     @Request() req,
     @Body() changePasswordDto: UpdatePasswordDto,
   ): Promise<APIResponse> {
-    const user = req.user as JwtUserData;
+    const user = req.user as JwtUserDataDto;
     const dto: UpdatePasswordDto = {
       newPassword: changePasswordDto.newPassword,
     };
@@ -164,7 +164,7 @@ export class AuthController {
   ): Promise<APIResponse> {
     // use this url http://localhost:7575/api/v1/user/reset/{{userid}}?token={{token}}
 
-    const user = req.user as JwtUserData;
+    const user = req.user as JwtUserDataDto;
 
     const status: boolean = await this.authService.resetPassword(
       resetPasswordDto,
