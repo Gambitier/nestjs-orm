@@ -2,26 +2,26 @@ import { APIResponse } from '@common/types';
 import { AllowAnonymous, Roles, UserRoleEnum } from '@modules/auth/common';
 import { JwtUserDataDto } from '@modules/auth/dto/response-dto/jwt.user.data.dto';
 import {
-    CreateLibraryDomainModel,
-    LibraryDomainModel
+  CreateLibraryDomainModel,
+  LibraryDomainModel,
 } from '@modules/library/domain.types/library';
 import {
-    CreateLibraryDTO,
-    CreateLibraryResponseDto,
-    LibrarySearchDTO
+  CreateLibraryDTO,
+  CreateLibraryResponseDto,
+  LibrarySearchDTO,
 } from '@modules/library/dto';
 import { LibraryResponseDto } from '@modules/library/dto/response-dto/library.response.dto';
 import { ILibraryService } from '@modules/library/services';
 import {
-    Body,
-    Controller,
-    Get,
-    HttpCode,
-    HttpStatus,
-    Inject,
-    Post,
-    Query,
-    Request
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Inject,
+  Post,
+  Query,
+  Request,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 

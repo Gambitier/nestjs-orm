@@ -12,8 +12,9 @@ import {
   UpdatePasswordDto,
 } from '@modules/auth/dto';
 import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
-import { IAuthService } from '@modules/auth/services';
 import { JwtUserDataDto } from '@modules/auth/dto/response-dto/jwt.user.data.dto';
+import { TokenDto } from '@modules/auth/dto/response-dto/token.dto';
+import { IAuthService } from '@modules/auth/services';
 import { UserDomainModel } from '@modules/user/domain.types/user';
 import {
   Body,
@@ -28,7 +29,6 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginApiResponse } from './api.response.types/auth.api.response';
-import { TokenDto } from '@modules/auth/dto/response-dto/token.dto';
 
 /////////////////////////////////////////////////////////////////////////
 
