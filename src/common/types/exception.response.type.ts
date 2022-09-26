@@ -3,4 +3,5 @@ export type ExceptionResponseBody = {
   timestamp: string;
   path: string;
   message: string;
+  response: any;
 };

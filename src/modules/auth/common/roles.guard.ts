@@ -1,6 +1,6 @@
 import { ROLES_KEY } from '@modules/auth/common/roles.decorator';
 import { UserRoleEnum } from '@modules/auth/common/user.role.enum';
-import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
+import { JwtUserDataDto } from '@modules/auth/dto/response-dto/jwt.user.data.dto';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
@@ -18,7 +18,9 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    const { user }: { user: JwtUserData } = context.switchToHttp().getRequest();
+    const { user }: { user: JwtUserDataDto } = context
+      .switchToHttp()
+      .getRequest();
     const roles: string[] = user?.userRoles?.map((userRole) => userRole.role);
     const isAuthorized: boolean = requiredRoles.some((role) =>
       roles.includes(role),

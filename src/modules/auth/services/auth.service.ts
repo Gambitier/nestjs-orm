@@ -8,10 +8,10 @@ import {
   UpdatePasswordDto,
 } from '@modules/auth/dto';
 import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
+import { JwtUserDataDto } from '@modules/auth/dto/response-dto/jwt.user.data.dto';
+import { TokenDto } from '@modules/auth/dto/response-dto/token.dto';
 import { IAuthService } from '@modules/auth/services/auth.service.interface';
 import { jwtConstants } from '@modules/auth/strategies/constants';
-import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
-import { TokenDto } from '@modules/auth/types/token.type';
 import { IEmailService } from '@modules/communication/services';
 import { UserDomainModel } from '@modules/user/domain.types/user';
 import { UserDto, UserRoleDto } from '@modules/user/dto';
@@ -60,7 +60,7 @@ export class AuthService implements IAuthService {
 
   async resetPassword(
     resetPasswordDto: UpdatePasswordDto,
-    jwtUserData: JwtUserData,
+    jwtUserData: JwtUserDataDto,
   ): Promise<boolean> {
     const user: UserDomainModel = await this.userService.findFirstByIdOrThrow(
       jwtUserData.id,
@@ -155,8 +155,9 @@ export class AuthService implements IAuthService {
   }
 
   private getToken = async (user: UserDomainModel): Promise<TokenDto> => {
-    const userDataForToken: JwtUserData = {
+    const userDataForToken: JwtUserDataDto = {
       id: user.id,
+      prefix: user.prefix,
       firstName: user.firstName,
       lastName: user.lastName,
       phone: user.phone,
