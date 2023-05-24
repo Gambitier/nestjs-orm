@@ -6,6 +6,7 @@ import {
 import { BaseDatabaseError } from '@modules/database-error-handler/errors/base.database.error';
 import {
   ArgumentsHost,
+  BadRequestException,
   Catch,
   ExceptionFilter,
   HttpException,
@@ -15,6 +16,12 @@ import {
 import { HttpAdapterHost } from '@nestjs/core';
 
 //////////////////////////////////////////////////////////////////
+
+type ClassValidatorErrorResponse = {
+  statusCode: any;
+  message: any;
+  error: any;
+};
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -46,6 +53,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
       message: mesage,
+      response:
+        error instanceof BadRequestException
+          ? (error.getResponse() as ClassValidatorErrorResponse)?.message ??
+            null
+          : null,
     };
 
     this._logger.error({
@@ -65,10 +77,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
     let httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     let mesage = 'Something went wrong with database operation';
 
-    if (error instanceof DataNotFoundError) {
-      httpStatus = HttpStatus.BAD_REQUEST;
-      mesage = error.message;
-    } else if (error instanceof UniqueConstraintFailedError) {
+    if (
+      error instanceof DataNotFoundError ||
+      error instanceof UniqueConstraintFailedError
+    ) {
       httpStatus = HttpStatus.BAD_REQUEST;
       mesage = error.message;
     }

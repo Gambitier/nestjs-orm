@@ -1,4 +1,4 @@
-import { UserRoleEnum } from '@modules/auth/common';
+import { UserRoleEnum } from '@modules/auth/common/user.role.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
@@ -11,7 +11,7 @@ export class UserRoleDto {
   @Expose()
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({ enum: UserRoleEnum })
   @Expose()
   role: UserRoleEnum;
 

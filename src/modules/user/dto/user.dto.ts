@@ -1,5 +1,6 @@
 import { UserRoleDto } from '@modules/user/dto/user.role.dto';
 import { GenderEnum } from '@modules/user/enums/gender.enum';
+import { UserPrefixEnum } from '@modules/user/enums/user.prefix.enum';
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 
@@ -12,9 +13,9 @@ export class UserDto {
   @Expose()
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({ enum: UserPrefixEnum })
   @Expose()
-  prefix: string;
+  prefix: UserPrefixEnum;
 
   @ApiProperty()
   @Expose()

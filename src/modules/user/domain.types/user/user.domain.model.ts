@@ -1,10 +1,11 @@
 import { UserRoleEnum } from '@modules/auth/common';
 import { UserRoleDomainModel } from '@modules/user/domain.types/user.role/user.role.domain.model';
 import { GenderEnum } from '@modules/user/enums/gender.enum';
+import { UserPrefixEnum } from '@modules/user/enums/user.prefix.enum';
 
 export type UserDomainModel = {
   id: string;
-  prefix: string;
+  prefix: UserPrefixEnum;
   firstName: string;
   middleName: string;
   lastName: string;
@@ -14,11 +15,11 @@ export type UserDomainModel = {
   gender: GenderEnum;
   dateOfBirth: Date;
   createdAt: Date;
-  userRoles: UserRoleDomainModel[];
+  userRoles?: UserRoleDomainModel[];
 };
 
 export type CreateUserDomainModel = {
-  prefix: string;
+  prefix: UserPrefixEnum;
   firstName: string;
   middleName?: string;
   lastName: string;

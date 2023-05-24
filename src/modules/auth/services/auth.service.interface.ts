@@ -6,8 +6,8 @@ import {
   UpdatePasswordDto,
 } from '@modules/auth/dto';
 import { SignupDto } from '@modules/auth/dto/request-dto/signup.dto';
-import { JwtUserData } from '@modules/auth/types/jwt.user.data.type';
-import { TokenDto } from '@modules/auth/types/token.type';
+import { JwtUserDataDto } from '@modules/auth/dto/response-dto/jwt.user.data.dto';
+import { TokenDto } from '@modules/auth/dto/response-dto/token.dto';
 import { UserDomainModel } from '@modules/user/domain.types/user';
 import { UserDto } from '@modules/user/dto';
 
@@ -22,7 +22,7 @@ export interface IAuthService {
 
   resetPassword(
     resetPasswordDto: UpdatePasswordDto,
-    user: JwtUserData,
+    user: JwtUserDataDto,
   ): Promise<boolean>;
 
   emailResetPasswordLink(
