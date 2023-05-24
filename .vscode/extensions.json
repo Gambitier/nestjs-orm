@@ -1,9 +1,10 @@
 {
-	"recommendations": [
-		"esbenp.prettier-vscode",
-		"donjayamanne.githistory",
-		"mikestead.dotenv",
-		"digitalbrainstem.javascript-ejs-support",
-		"dbaeumer.vscode-eslint"
-	]
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "donjayamanne.githistory",
+    "mikestead.dotenv",
+    "digitalbrainstem.javascript-ejs-support",
+    "dbaeumer.vscode-eslint",
+    "Prisma.prisma"
+  ]
 }
