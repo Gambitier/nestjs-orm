@@ -2,7 +2,14 @@
   "name": "nestjs-orm",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Akash Jadhav<akash.jadhav.cse@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gambitier/nestjs-orm.git"
+  },
+  "engines": {
+    "node": "14.21.3"
+  },
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
