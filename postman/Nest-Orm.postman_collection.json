@@ -1,0 +1,302 @@
+{
+	"info": {
+		"_postman_id": "4d1bca7e-651e-4c74-86e0-3c589c86d4ff",
+		"name": "Nest-Orm",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12792794"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"\r",
+									"    pm.test(\"Body matches string\", function () {\r",
+									"        pm.expect(pm.response.text()).to.include(\"accessToken\");\r",
+									"    });\r",
+									"\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"accessToken\", jsonData.data.entity.token.accessToken);\r",
+									"    pm.collectionVariables.set(\"userId\", jsonData.data.entity.user.id);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"prefix\": \"MR\",\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"email\": \"user@yopmail.com\",\r\n  \"phone\": \"1234567890\",\r\n  \"gender\": \"MALE\",\r\n  \"password\": \"string\",\r\n  \"dateOfBirth\": \"2022-09-17\",\r\n  \"middleName\": \"string\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/auth/signup",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"\r",
+									"    pm.test(\"Body matches string\", function () {\r",
+									"        pm.expect(pm.response.text()).to.include(\"accessToken\");\r",
+									"    });\r",
+									"\r",
+									"    pm.test(\"Body should not contain password string\", function () {\r",
+									"        pm.expect(pm.response.text()).to.not.include(\"password\");\r",
+									"    });\r",
+									"\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"accessToken\", jsonData.data.entity.token.accessToken);\r",
+									"    pm.collectionVariables.set(\"userId\", jsonData.data.entity.user.id);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"user@yopmail.com\",\r\n  \"password\": \"string\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/auth/login",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forget-password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"user@yopmail.com\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/auth/forget-password",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"auth",
+								"forget-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Library",
+			"item": [
+				{
+					"name": "create library",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Pune City Central Library\",\r\n  \"address\": {\r\n    \"streetAddress\": \"Gera-77, 3rd & 4th floor, Near Trump Tower\",\r\n    \"city\": \"Pune\",\r\n    \"state\": \"Maharashtra\",\r\n    \"zipCode\": \"413304\",\r\n    \"country\": \"India\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/library",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"library"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "search (public endpoint)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"City Central Library\",\r\n  \"address\": {\r\n    \"streetAddress\": \"Gera-77, 3rd & 4th floor, Near Trump Tower\",\r\n    \"city\": \"Pune\",\r\n    \"state\": \"Maharashtra\",\r\n    \"zipCode\": \"413304\",\r\n    \"country\": \"India\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/library/search?name=city&city=Pune&limit=10&offset=0",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"library",
+								"search"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "city"
+								},
+								{
+									"key": "city",
+									"value": "Pune"
+								},
+								{
+									"key": "state",
+									"value": "mh",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BaseUrl",
+			"value": "http://localhost:7575/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		}
+	]
+}
