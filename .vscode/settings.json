@@ -1,13 +1,22 @@
 {
+  "eslint.format.enable": true,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll": false,
-    "source.organizeImports": true
+      "source.fixAll": false,
+      "source.organizeImports": true
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "typescript.preferences.importModuleSpecifier": "non-relative"
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "typescript.preferences.importModuleSpecifier": "non-relative"
   },
+  "eslint.enable": true,
+  "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact"
+  ],
+  "typescript.format.semicolons": "insert",
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   }
